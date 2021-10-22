@@ -5,7 +5,7 @@ import xlrd
 import os.path
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
-
+from filereader import acquire_numbers_from_excel_file
 wa_button_send_id = "_4sWnG"
 
 
@@ -34,17 +34,6 @@ def send_to_list(list_of_numbers, text_list):
         time.sleep(8)
         wa_send(driver)
     driver.close()
-
-
-def acquire_numbers_and_text_from_excel_file(file_name = "numeri.xls"):
-    wb = xlrd.open_workbook(file_name)
-    sheet = wb.sheet_by_index(0)
-    numbers = []
-    texts = []
-    for i in range(0, sheet.nrows):
-        numbers.append(sheet.cell_value(i, 0))
-        texts.append(sheet.cell_value(i, 1))
-    return numbers, texts
 
 
 def send_img():
