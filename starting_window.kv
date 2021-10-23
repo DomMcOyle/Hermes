@@ -1,0 +1,49 @@
+WindowManager:
+    MainWindow:
+    RecapWindow:
+    ProgressWindow:
+
+<MainWindow>:
+    name: "main"
+
+    RelativeLayout:
+        size: root.width, root.height
+
+        Button:
+            text: "Carica"
+            size_hint: 0.5,0.25
+            font_size: 32
+
+        Button:
+            text: "Visualizza"
+            size_hint: 0.5,0.25
+            font_size: 32
+
+        Button:
+            text: "Impostazioni"
+            size_hint: 0.5,0.25
+            font_size: 32
+
+        Button:
+            text: "Invia"
+            size_hint: 0.5,0.25
+            font_size: 32
+            pos_hint: {'center_x':0.5, 'center_y':0.5}
+            on_release: app.root.current = "second"
+
+        Button:
+            text: "Aggiungi foto"
+            size_hint: 0.5,0.25
+            font_size: 32
+
+        TextInput:
+            hint_text: "Inserisci un messaggio..."
+        TextInput:
+            hint_text: "Inserisci riga di partenza..."
+
+
+<RecapWindow>:
+    name:"recap"
+
+<ProgressWindow>:
+    name:"progress"
