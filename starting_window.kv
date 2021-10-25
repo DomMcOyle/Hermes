@@ -7,12 +7,16 @@ WindowManager:
     name: "main"
 
     RelativeLayout:
-        size: root.width, root.height
 
         Button:
-            text: "Carica"
-            size_hint: 0.5,0.25
+            text: "Apri"
+            size_hint: 0.15,0.15
+            pos_hint: {'top':0.95, 'x':0.05}
             font_size: 32
+            on_press: root.choose_file()
+
+        label:
+            id: filename
 
         Button:
             text: "Visualizza"
@@ -29,7 +33,7 @@ WindowManager:
             size_hint: 0.5,0.25
             font_size: 32
             pos_hint: {'center_x':0.5, 'center_y':0.5}
-            on_release: app.root.current = "second"
+            on_release: app.root.current = "recap"
 
         Button:
             text: "Aggiungi foto"
@@ -38,8 +42,10 @@ WindowManager:
 
         TextInput:
             hint_text: "Inserisci un messaggio..."
+            size_hint: 0.5,0.25
         TextInput:
             hint_text: "Inserisci riga di partenza..."
+            size_hint: 0.5,0.25
 
 
 <RecapWindow>:
