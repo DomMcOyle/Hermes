@@ -20,10 +20,14 @@ class MainWindow(Screen):
         if self.ids.visualize_button.disabled:
             self.ids.visualize_button.disabled = False
 
-
     def preview_excel(self):
         app = App.get_running_app()
-        os.startfile(app.options.get_exc_path())
+        path = app.options.get_exc_path()
+        if os.path.isfile(path):
+            os.startfile(path)
+        else:
+            #TODO inserire un pop-up
+            pass
 
 
 
