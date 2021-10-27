@@ -1,3 +1,5 @@
+#:import basename os.path.basename
+
 WindowManager:
     MainWindow:
     RecapWindow:
@@ -9,19 +11,27 @@ WindowManager:
     RelativeLayout:
 
         Button:
+            id: open_button
             text: "Apri"
             size_hint: 0.15,0.15
             pos_hint: {'top':0.95, 'x':0.05}
             font_size: 32
-            on_press: root.choose_file()
+            on_release: root.choose_file()
 
-        label:
-            id: filename
+        Label:
+            id: filename_label
+            text: basename(app.options.get_exc_path())
+            size_hint: 0.15,0.15
+            pos_hint: {'top':0.80, 'x':0.20}
 
         Button:
+            id: visualize_button
             text: "Visualizza"
-            size_hint: 0.5,0.25
+            size_hint: 0.25,0.10
+            pos_hint: {'top':0.95, 'x':0.30}
             font_size: 32
+            disabled: not app.options.get_exc_path()
+            on_release: root.preview_excel()
 
         Button:
             text: "Impostazioni"
