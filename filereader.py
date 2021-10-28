@@ -1,23 +1,25 @@
-import xlrd
+import pandas as pd
 import re
 import constants
+import openpyxl
 
 
 def acquire_numbers_from_excel_file(file_name = "numeri.xls"):
-    wb = xlrd.open_workbook(file_name)
-    sheet = wb.sheet_by_index(0)
+    wb = pd.read_excel(file_name, header=None, engine="openpyxl")
+    sheet = wb.to_numpy()
     correct_numbers = []
     wrong_number_indexes = []
     col_numbers = -1
-    for i in range(0, sheet.ncols):
-        if check_if_number(sheet.cell_value(0, i)):
-            col_numbers = i
-            break
+    for i in range(0, sheet.shape[1]):
+        if type(sheet[0, i]) == str:
+            if check_if_number(sheet[0, i]):
+                col_numbers = i
+                break
     if col_numbers == -1:
         raise Exception(constants.no_numbers_in_excel_exception_str)
-    for j in range(0, sheet.nrows):
+    for j in range(0, sheet.shape[0]):
         try:
-            current_number = fix_number(sheet.cell_value(j, col_numbers))
+            current_number = fix_number(sheet[j, col_numbers])
             correct_numbers.append(current_number)
         except:
             wrong_number_indexes.append(j)
