@@ -57,6 +57,29 @@ WindowManager:
             hint_text: "Inserisci riga di partenza..."
             size_hint: 0.5,0.25
 
+        Button:
+            id: open_images
+            text: "Seleziona immagine/video"
+            size_hint: 0.35,0.15
+            pos_hint: {'top':0.95, 'x':0.60}
+            font_size: 20
+            on_release: root.load_images()
+
+        Label:
+            id: image_label
+            text: basename("Nessun immagine selezionata")
+            size_hint: 0.15,0.15
+            pos_hint: {'top':0.80, 'x':0.65}
+
+        Carousel:
+            id: carousel_holder
+            size_hint: 0.30,0.30
+            allow_stretch: True
+            pos_hint: {'top':0.30, 'x':0.65}
+            Image:
+                id: PLACEOLDERUAGLIOOOOO
+                source: "place_holder_donore_come_manfredi.PNG"
+
 
 <RecapWindow>:
     name:"recap"

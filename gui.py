@@ -5,7 +5,8 @@ from kivy.uix.screenmanager import Screen, ScreenManager
 from tkinter import filedialog, Tk
 from Options import Options
 import os
-
+from kivy.uix.image import Image
+from kivy.uix.carousel import Carousel
 
 class MainWindow(Screen):
     def choose_file(self):
@@ -26,8 +27,25 @@ class MainWindow(Screen):
         if os.path.isfile(path):
             os.startfile(path)
         else:
-            #TODO inserire un pop-up
+            # TODO inserire un pop-up
             pass
+
+    def load_images(self):
+        Tk().withdraw()
+        filepaths = filedialog.askopenfilenames(title="Scegli le immagini da caricare",
+                                               filetypes=[("Images", ".jpg .jpeg .png")])
+        if len(filepaths) == 0:
+            return
+        name_list = []
+        self.ids.carousel_holder.clear_widgets()
+        for elem in filepaths:
+            name_list.append(elem.split("/")[-1]) #add to name list
+            self.ids.carousel_holder.add_widget(Image(source=elem)) #and to carousel
+
+        names_to_show = str(name_list) \
+            .replace("'", "").replace("[", "").replace("]", "").replace(",", "").replace(" ", "\n")
+        image_label = self.ids.image_label
+        image_label.text = os.path.basename(names_to_show)
 
 
 
