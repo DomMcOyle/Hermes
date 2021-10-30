@@ -13,8 +13,8 @@ WindowManager:
         Button:
             id: open_button
             text: "Apri"
-            size_hint: 0.15,0.15
-            pos_hint: {'top':0.95, 'x':0.05}
+            size_hint: 0.30,0.20
+            pos_hint: {'top':0.95, 'x':0.02}
             font_size: 32
             on_release: root.choose_file()
 
@@ -22,64 +22,70 @@ WindowManager:
             id: filename_label
             text: basename(app.options.get_exc_path())
             size_hint: 0.15,0.15
-            pos_hint: {'top':0.80, 'x':0.20}
+            pos_hint: {'top':1.02, 'x':0.465}
 
         Button:
             id: visualize_button
             text: "Visualizza"
-            size_hint: 0.25,0.10
-            pos_hint: {'top':0.95, 'x':0.30}
-            font_size: 32
+            size_hint: 0.40,0.10
+            pos_hint: {'top':0.90, 'x':0.34}
+            font_size: 24
             disabled: not app.options.get_exc_path()
             on_release: root.preview_excel()
 
         Button:
-            text: "Impostazioni"
-            size_hint: 0.5,0.25
-            font_size: 32
-
-        Button:
             text: "Invia"
-            size_hint: 0.5,0.25
+            size_hint: 0.25,0.45
             font_size: 32
-            pos_hint: {'center_x':0.5, 'center_y':0.5}
             on_release: root.check_and_recap()
-
-        Button:
-            text: "Aggiungi foto"
-            size_hint: 0.5,0.25
-            font_size: 32
+            pos_hint: {'top':0.52, 'x':0.74}
+            on_release: app.root.current = "recap"
 
         TextInput:
             hint_text: "Inserisci un messaggio..."
-            size_hint: 0.5,0.25
+
+            size_hint: 0.30,0.20
+            pos_hint: {'top':0.60, 'x':0.02}
 
         TextInput:
             hint_text: "Inserisci riga di partenza..."
-            size_hint: 0.5,0.25
+            size_hint: 0.25,0.05
+            pos_hint: {'top':0.60, 'x':0.74}
 
         Button:
             id: open_images
-            text: "Seleziona immagine/video"
-            size_hint: 0.35,0.15
-            pos_hint: {'top':0.95, 'x':0.60}
+            text: "Aggiungi\nimmagine/video"
+            size_hint: 0.30,0.20
+            pos_hint: {'top':0.30, 'x':0.02}
             font_size: 20
             on_release: root.load_images()
 
         Label:
             id: image_label
             text: basename("Nessun immagine selezionata")
-            size_hint: 0.15,0.15
-            pos_hint: {'top':0.80, 'x':0.65}
+            size_hint: 0.30,0.30
+            pos_hint: {'top':0.74, 'x':0.385}
 
-        Carousel:
-            id: carousel_holder
+        Image:
+            id: images_holder
             size_hint: 0.30,0.30
             allow_stretch: True
-            pos_hint: {'top':0.30, 'x':0.65}
-            Image:
-                id: PLACEOLDERUAGLIOOOOO
-                source: "place_holder_donore_come_manfredi.PNG"
+            pos_hint: {'top':0.35, 'x':0.38}
+            source: "place_holder_donore_come_manfredi.PNG"
+
+        Button:
+            id: next_image_button
+            text: ">"
+            size_hint: 0.05, 0.10
+            pos_hint: {'top':0.25, 'x':0.68}
+            on_release: root.next_pic()
+
+        Button:
+            id: prev_image_button
+            text: "<"
+            size_hint: 0.05, 0.10
+            pos_hint: {'top':0.25, 'x':0.33} #0.50
+            on_release: root.prev_pic()
 
 
 <RecapWindow>:
