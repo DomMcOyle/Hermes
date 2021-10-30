@@ -14,22 +14,35 @@ from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
-
+from filereader import check_rows
 
 
 class MainWindow(Screen):
-
 
     def check_and_recap(self):
         app = App.get_running_app()
         if not os.path.isfile(app.options.get_exc_path()):
             Alert().fire("Non è stato selezionato un file valido", "Errore")
-        # check che le imagepath siano corrette
+            return
+        if self.ids.message_input.text == "":
+            Alert().fire("Non è stato inserito del testo da inviare.", "Errore")
+            return
+        for image in app.file_paths:
+            if not os.path.isfile(image):
+                Alert().fire("L'immagine " + os.path.basename(image) + " non è stata trovata.", "Errore")
+                return
+        if not self.ids.row_input.text == "":
+            start_index = int(self.ids.row_input.text)
+            exc_rows = check_rows(app.options.get_exc_path())
+            if start_index < 1 or start_index > exc_rows:
+                Alert().fire("L'indice non presenta un valore valido. (Il file selezionato ha " + str(exc_rows)
+                             + " righe)", "Errore")
+                return
+
         # check che ci sia del testo
         # check che l'ìndice sia valido
-        else:
-            self.manager.transition.direction = 'left'
-            self.manager.current = 'recap'
+        self.manager.transition.direction = 'left'
+        self.manager.current = 'recap'
 
     def choose_file(self):
         Tk().withdraw()

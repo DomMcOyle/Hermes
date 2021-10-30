@@ -39,15 +39,17 @@ WindowManager:
             font_size: 32
             on_release: root.check_and_recap()
             pos_hint: {'top':0.52, 'x':0.74}
-            on_release: app.root.current = "recap"
 
         TextInput:
+            id: message_input
             hint_text: "Inserisci un messaggio..."
 
             size_hint: 0.30,0.20
             pos_hint: {'top':0.60, 'x':0.02}
 
         TextInput:
+            id: row_input
+            input_filter: 'int'
             hint_text: "Inserisci riga di partenza..."
             size_hint: 0.25,0.05
             pos_hint: {'top':0.60, 'x':0.74}
