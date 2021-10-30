@@ -14,6 +14,20 @@ from kivy.uix.button import Button
 
 
 class MainWindow(Screen):
+
+    def check_and_recap(self):
+        app = App.get_running_app()
+        if not os.path.isfile(app.options.get_exc_path()):
+            Alert().fire("Non è stato selezionato un file valido", "Errore")
+
+        # check che le imagepath siano corrette
+        # check che ci sia del testo
+        # check che l'ìndice sia valido
+        else:
+            self.manager.transition.direction = 'left'
+            self.manager.current = 'recap'
+
+
     def choose_file(self):
         Tk().withdraw()
         filepath = filedialog.askopenfilename(title="Scegli un File Excel",

@@ -43,7 +43,7 @@ WindowManager:
             size_hint: 0.5,0.25
             font_size: 32
             pos_hint: {'center_x':0.5, 'center_y':0.5}
-            on_release: app.root.current = "recap"
+            on_release: root.check_and_recap()
 
         Button:
             text: "Aggiungi foto"
@@ -84,6 +84,28 @@ WindowManager:
 
 <RecapWindow>:
     name:"recap"
+    RelativeLayout:
+        Label:
+            id: wall
+            text_size: self.width, None
+            size_hint: 0.9, 0.7
+            height: self.texture_size[1]
+            pos_hint: {'center_x':0.5, 'top':0.95}
+            halign: 'left'
+            valign: 'middle'
+        Button:
+            text:"Conferma e invia"
+            size_hint: 0.20,0.07
+            pos_hint:{'y': 0.10, 'right': 0.75}
+        Button:
+            text:"Indietro"
+            size_hint: 0.20,0.07
+            pos_hint:{'y': 0.10, 'x': 0.25}
+            on_release:
+                root.manager.transition.direction = 'right'
+                root.manager.current = 'main'
+
+
 
 <ProgressWindow>:
     name:"progress"
@@ -95,13 +117,14 @@ WindowManager:
     RelativeLayout:
         Label:
             id: alert_message
-            text_size: self.width, self.height
+            text_size: self.width, None
             size_hint: 0.9, 0.7
             height: self.texture_size[1]
             pos_hint:{'center_x':0.5, 'top':0.95}
             halign: 'auto'
             valign: 'middle'
             max_lines: 6
+
         Button:
             text: "Chiudi"
             pos_hint:{'y': 0.10, 'right': 0.95}
