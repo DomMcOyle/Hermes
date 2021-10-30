@@ -7,6 +7,11 @@ from Options import Options
 import os
 from kivy.uix.image import Image
 from kivy.uix.carousel import Carousel
+from kivy.uix.label import Label
+from kivy.uix.popup import Popup
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.button import Button
+
 
 class MainWindow(Screen):
     def choose_file(self):
@@ -14,12 +19,13 @@ class MainWindow(Screen):
         filepath = filedialog.askopenfilename(title="Scegli un File Excel",
                                               filetypes=[("Excel files", ".xlsx .xls")])
         # TODO eventualmente controllare liceità file excel
-        app = App.get_running_app()
-        app.options.set_exc_path(filepath)
-        fnlabel = self.ids.filename_label
-        fnlabel.text = os.path.basename(filepath)
-        if self.ids.visualize_button.disabled:
-            self.ids.visualize_button.disabled = False
+        if filepath:
+            app = App.get_running_app()
+            app.options.set_exc_path(filepath)
+            fnlabel = self.ids.filename_label
+            fnlabel.text = os.path.basename(filepath)
+            if self.ids.visualize_button.disabled:
+                self.ids.visualize_button.disabled = False
 
     def preview_excel(self):
         app = App.get_running_app()
@@ -27,8 +33,9 @@ class MainWindow(Screen):
         if os.path.isfile(path):
             os.startfile(path)
         else:
-            # TODO inserire un pop-up
-            pass
+            Alert().fire('Il file "' + os.path.basename(path) + '" non è stato trovato nella cartella "' +
+                        os.path.dirname(path) + '".', "Errore")
+
 
     def load_images(self):
         Tk().withdraw()
@@ -59,6 +66,15 @@ class ProgressWindow(Screen):
 
 class WindowManager(ScreenManager):
     pass
+
+
+class Alert(Popup):
+    def fire(self, message, title):
+        self.ids.alert_message.text = message
+        self.title=title
+        self.open()
+    pass
+
 
 
 class BaseApp(App):

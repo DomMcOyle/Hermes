@@ -53,6 +53,7 @@ WindowManager:
         TextInput:
             hint_text: "Inserisci un messaggio..."
             size_hint: 0.5,0.25
+
         TextInput:
             hint_text: "Inserisci riga di partenza..."
             size_hint: 0.5,0.25
@@ -86,3 +87,23 @@ WindowManager:
 
 <ProgressWindow>:
     name:"progress"
+
+<Alert>:
+    name:"alert"
+    size: 500, 250
+    size_hint: None, None
+    RelativeLayout:
+        Label:
+            id: alert_message
+            text_size: self.width, self.height
+            size_hint: 0.9, 0.7
+            height: self.texture_size[1]
+            pos_hint:{'center_x':0.5, 'top':0.95}
+            halign: 'auto'
+            valign: 'middle'
+            max_lines: 6
+        Button:
+            text: "Chiudi"
+            pos_hint:{'y': 0.10, 'right': 0.95}
+            size_hint : (0.3,0.2)
+            on_release: root.dismiss()
