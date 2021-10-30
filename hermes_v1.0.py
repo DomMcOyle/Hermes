@@ -1,13 +1,13 @@
 import time
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-import xlrd
+#import xlrd
 import os.path
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from filereader import acquire_numbers_from_excel_file
 wa_button_send_id = "_4sWnG"
-
+from kivy.app import App
 
 def initialize_web_driver():
     homedir = os.path.expanduser("~")
