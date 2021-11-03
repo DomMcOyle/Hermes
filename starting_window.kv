@@ -93,14 +93,36 @@ WindowManager:
 <RecapWindow>:
     name:"recap"
     RelativeLayout:
-        Label:
-            id: wall
-            text_size: self.width, None
-            size_hint: 0.9, 0.7
-            height: self.texture_size[1]
+        GridLayout:
+            rows : 4
+            cols : 2
+            size_hint: 0.9, 0.5
             pos_hint: {'center_x':0.5, 'top':0.95}
-            halign: 'left'
-            valign: 'middle'
+
+            Label:
+                text : "Testo del messaggio: "
+                halign: 'left'
+
+            Label:
+            #    text: main.message_input.text
+
+            Label:
+                text : "File dei numeri: "
+                halign: 'left'
+            Label:
+
+
+            Label:
+                text : "Indice di partenza: "
+                halign: 'left'
+
+            Label:
+
+            Label:
+                text : "Immagini selezionate: "
+                halign: 'left'
+            Label:
+
         Button:
             text:"Conferma e invia"
             size_hint: 0.20,0.07
