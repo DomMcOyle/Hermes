@@ -86,6 +86,14 @@ WindowManager:
             pos_hint: {'top':0.25, 'x':0.33} #0.50
             on_release: root.prev_pic()
 
+        Button:
+            id: remove_image_button
+            text: "rimuovi media"
+            size_hint: 0.15, 0.10
+            pos_hint: {'top':0.43, 'x':0.45} #0.50
+            on_release: root.remove_pic()
+
+
 
 <RecapWindow>:
     name:"recap"
