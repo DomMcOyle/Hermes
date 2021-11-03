@@ -31,6 +31,7 @@ class MainWindow(Screen):
             if not os.path.isfile(image):
                 Alert().fire("L'immagine " + os.path.basename(image) + " non è stata trovata.", "Errore")
                 return
+        start_index = app.options.get_last_index() + 1
         if not self.ids.row_input.text == "":
             start_index = int(self.ids.row_input.text)
             exc_rows = check_rows(app.options.get_exc_path())
@@ -38,9 +39,17 @@ class MainWindow(Screen):
                 Alert().fire("L'indice non presenta un valore valido. (Il file selezionato ha " + str(exc_rows)
                              + " righe)", "Errore")
                 return
+        app.message_txt = self.ids.message_input.text
 
-        # check che ci sia del testo
-        # check che l'ìndice sia valido
+        next_window = self.manager.get_screen('recap')
+        next_window.ids.message_label.text = app.message_txt
+        next_window.ids.excel_label.text = app.options.get_exc_path()
+        next_window.ids.index_label.text = str(start_index)
+        imagelist = ""
+        for i in app.file_paths:
+            imagelist = imagelist + os.path.basename(i) + '\n'
+        next_window.ids.image_label.text = imagelist
+
         self.manager.transition.direction = 'left'
         self.manager.current = 'recap'
 
@@ -143,6 +152,7 @@ class BaseApp(App):
         self.img_paths = []
         self.current_image = 0
         self.file_paths = []
+        self.message_txt = ""
         if not os.path.isfile(self.options.get_exc_path()):
             # if the file does not exist anymore, the path is disabled.
             self.options.set_exc_path("")
