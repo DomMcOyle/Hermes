@@ -96,27 +96,29 @@ WindowManager:
         Label:
             text : "Testo del messaggio: "
             halign: 'left'
-            valign: 'top'
+            valign: 'center'
             size_hint: (0.4,None)
             text_size: self.width, None
             height: 50
-            pos_hint: {'x':0.1, 'top': 0.95}
+            pos_hint: {'x':0.1, 'top': 1}
         ScrollView:
-            do_scroll_x : False
-            do_scroll_y : True
-            always_overscroll: False
-            bar_color: [.1,.1,.1,.9]
-            bar_width: 5
+            do_scroll_x: False
+            do_scroll_y: True
+            pos_hint: {'x':0.4, 'top':1}
+            size_hint: 0.5, 0.4
             scroll_type: ['bars']
-            pos_hint: {'x':0.5, 'top': 0.95}
+            bar_width: 5
             Label:
-                id: message_label
-                halign: 'left'
-                valign: 'top'
-                text_size: self.width, None
+                id:message_label
                 size_hint_y: None
                 height: self.texture_size[1]
-                width: 100
+                text_size: self.width, None
+                padding : 10,10
+
+
+
+
+
 
 
         Label:
