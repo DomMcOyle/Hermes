@@ -146,6 +146,7 @@ WindowManager:
             halign: 'left'
             valign: 'top'
             size_hint: (0.4,0.1)
+            pos_hint: {'x':0.05, 'top': 0.45}
             text_size: self.width, None
             height: self.texture_size[1]
 
@@ -158,6 +159,7 @@ WindowManager:
             size_hint: (0.6, 0.1)
             text_size: self.width, None
             height: self.texture_size[1]
+            pos_hint: {'x':0.35, 'top': 0.45}
 
         Label:
             text : "Indice di partenza: "
@@ -166,6 +168,7 @@ WindowManager:
             size_hint: (0.4,0.1)
             text_size: self.width, None
             height: self.texture_size[1]
+            pos_hint: {'x':0.05, 'top': 0.40}
 
         Label:
             id: index_label
@@ -174,6 +177,7 @@ WindowManager:
             size_hint: (0.6, 0.1)
             text_size: self.width, None
             height: self.texture_size[1]
+            pos_hint: {'x':0.35, 'top': 0.40}
 
 
         Button:
