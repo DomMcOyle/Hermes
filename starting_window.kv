@@ -93,27 +93,31 @@ WindowManager:
 <RecapWindow>:
     name:"recap"
     RelativeLayout:
+        id: layout
         Label:
             text : "Testo del messaggio: "
             halign: 'left'
             valign: 'center'
-            size_hint: (0.4,None)
+            size_hint: (0.5,None)
             text_size: self.width, None
             height: 50
-            pos_hint: {'x':0.1, 'top': 1}
+            pos_hint: {'x':0.1, 'top': 0.95}
+            padding: 0,10
         ScrollView:
+            id: scroll_message
             do_scroll_x: False
             do_scroll_y: True
-            pos_hint: {'x':0.4, 'top':1}
-            size_hint: 0.5, 0.4
+            pos_hint: {'x':0.35, 'top':0.95}
+            size_hint: 0.6, 0.2
             scroll_type: ['bars']
-            bar_width: 5
+            bar_width: 15
             Label:
                 id:message_label
                 size_hint_y: None
                 height: self.texture_size[1]
                 text_size: self.width, None
-                padding : 10,10
+                padding : 15,14
+
 
 
 

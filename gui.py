@@ -15,6 +15,9 @@ from kivy.uix.popup import Popup
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from filereader import check_rows
+from kivy.config import Config
+
+Config.set("input", "mouse", "mouse,multitouch_on_demand")
 
 
 class MainWindow(Screen):
