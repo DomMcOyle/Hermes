@@ -40,13 +40,17 @@ class MainWindow(Screen):
                 Alert().fire("L'immagine " + os.path.basename(image) + " non è stata trovata.", "Errore")
                 return
         start_index = app.options.get_last_index() + 1
+        exc_rows = check_rows(app.options.get_exc_path())
+        if exc_rows < 1:
+            Alert().fire("Il file selezionato è vuoto", "Errore")
+            return
         if not self.ids.row_input.text == "":
             start_index = int(self.ids.row_input.text)
-            exc_rows = check_rows(app.options.get_exc_path())
             if start_index < 1 or start_index > exc_rows:
                 Alert().fire("L'indice non presenta un valore valido. (Il file selezionato ha " + str(exc_rows)
                              + " righe)", "Errore")
                 return
+
         app.message_txt = self.ids.message_input.text
 
         next_window = self.manager.get_screen('recap')
@@ -148,7 +152,19 @@ class MainWindow(Screen):
 
 
 class RecapWindow(Screen):
-    pass
+    def start_send(self):
+        start_index = int(self.ids.index_label.text)-1
+        next_window = self.manager.get_screen('progress')
+
+        rows = check_rows(App.get_running_app().options.get_exc_path())
+        next_window.ids.p_bar.max = rows - start_index
+        next_window.ids.p_label.text = "Invio dei messaggi...  (" + str(rows - start_index) + " numeri rimanenti)"
+
+        self.manager.transition.direction = 'left'
+        self.manager.current = 'progress'
+
+
+
 
 
 class ProgressWindow(Screen):
