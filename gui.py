@@ -15,8 +15,9 @@ from kivy.uix.popup import Popup
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 
-from filereader import check_rows
+from filereader import check_rows, acquire_numbers_from_excel_file
 from kivy.config import Config
+from hermes import send_to_list
 import constants
 
 Config.set("input", "mouse", "mouse,multitouch_on_demand")
@@ -32,8 +33,8 @@ class MainWindow(Screen):
         if not os.path.isfile(app.options.get_exc_path()):
             Alert().fire("Non è stato selezionato un file valido", "Errore")
             return
-        if self.ids.message_input.text == "":
-            Alert().fire("Non è stato inserito del testo da inviare.", "Errore")
+        if self.ids.message_input.text == "" and len(app.file_paths) == 0:
+            Alert().fire("Non è stato inserito del testo o immagini da inviare.", "Errore")
             return
         for image in app.file_paths:
             if not os.path.isfile(image):
@@ -60,6 +61,8 @@ class MainWindow(Screen):
         imagelist = ""
         for i in app.file_paths:
             imagelist = imagelist + os.path.basename(i) + '\n'
+        if not imagelist:
+            imagelist = "Nessuna immagine selezionata"
         next_window.ids.image_label.text = imagelist
 
         self.manager.transition.direction = 'left'
@@ -153,12 +156,17 @@ class MainWindow(Screen):
 
 class RecapWindow(Screen):
     def start_send(self):
-        start_index = int(self.ids.index_label.text)-1
+        app = App.get_running_app()
+        app.effective_starting_index = int(self.ids.index_label.text)-1
         next_window = self.manager.get_screen('progress')
 
-        rows = check_rows(App.get_running_app().options.get_exc_path())
-        next_window.ids.p_bar.max = rows - start_index
-        next_window.ids.p_label.text = "Invio dei messaggi...  (" + str(rows - start_index) + " numeri rimanenti)"
+        rows = check_rows(app.options.get_exc_path())
+        next_window.ids.p_bar.max = rows - app.effective_starting_index
+        next_window.ids.p_label.text = "Invio dei messaggi...  (" + str(next_window.ids.p_bar.max) + " numeri rimanenti)"
+
+        if not os.path.isfile(app.options.get_exc_path()):
+            Alert().fire("Il file contenente i numeri è stato spostato o rimosso.", "Errore")
+            return
 
         self.manager.transition.direction = 'left'
         self.manager.current = 'progress'
@@ -166,9 +174,27 @@ class RecapWindow(Screen):
 
 
 
-
 class ProgressWindow(Screen):
-    pass
+    def send_loop(self):
+        app = App.get_running_app()
+        try:
+            number_list, wrong_numbers = acquire_numbers_from_excel_file(app.options.get_exc_path())
+        except:
+            Alert().fire("Il file indicato non contiene numeri di telefono utilizzabili", "Errore")
+            self.manager.transition.direction = 'right'
+            self.manager.current = 'main'
+            return
+        send_to_list(number_list, app.effective_starting_index, app.message_txt, app.file_paths, self)
+
+    def update_progress_bar(self):
+        self.ids.p_bar.value += 1
+        remaining = self.ids.p_bar.max - 1
+        self.ids.p_label.text = "Invio dei messaggi...  (" + str(remaining) + " numeri rimanenti)"
+
+    def finalize(self):
+        self.ids.p_label.text = "Invio dei messaggi completato!"
+        # TODO: fare attenzione alla disabilita del messaggio
+        self.ids.pause_button.disabled = True
 
 
 class WindowManager(ScreenManager):
@@ -191,6 +217,7 @@ class BaseApp(App):
         self.current_image = 0
         self.file_paths = []
         self.message_txt = ""
+        self.effective_starting_index = 0
         if not os.path.isfile(self.options.get_exc_path()):
             # if the file does not exist anymore, the path is disabled.
             self.options.set_exc_path("")

@@ -16,33 +16,47 @@ def initialize_web_driver():
     op.add_experimental_option("excludeSwitches", ["enable-automation"])
     op.add_experimental_option("useAutomationExtension", False)
 
-    driver = webdriver.Chrome("chromedriver_win32//chromedriver.exe",
+    driver = webdriver.Chrome("chromedriver.exe",
                               options=op)
     driver.maximize_window()
     return homedir, op, driver
 
 
-def wa_send(driver):
+def wa_send(driver, string_of_photos):
+    if string_of_photos:
+        inv = driver.find_element_by_xpath("//input[@type='file']")
+        inv.send_keys(string_of_photos)
+    time.sleep(2)
     driver.find_element_by_xpath("//span[@data-icon='send']").click()
     time.sleep(2)
 
 
-def send_to_list(list_of_numbers, text_list):
+def send_to_list(list_of_numbers, start_idx,  text_list, list_of_photos, window):
     homedir, op, driver = initialize_web_driver()
-    for i in range(0, len(list_of_numbers)):
-        driver.get("https://web.whatsapp.com/send?phone=" + list_of_numbers[i] + "&text=" + text_list[i])
+    string_of_photos = ""
+    if len(list_of_photos) > 0:
+        string_of_photos = list_of_photos[0]
+        for photo in range(1, len(list_of_photos)):
+            string_of_photos += ('\n' + list_of_photos[photo])
+
+    for i in range(start_idx, len(list_of_numbers)):
+#        driver.get("https://web.whatsapp.com/send?phone=" + list_of_numbers[i] + "&text=" + text_list[i])
+        driver.get("https://web.whatsapp.com/send?phone=" + list_of_numbers[i] + "&text=" + text_list)
         time.sleep(8)
-        wa_send(driver)
+        wa_send(driver, string_of_photos)
+        window.update_progress_bar()
     driver.close()
+    window.finalize()
 
-
+"""
 def send_img():
     homedir, op, driver = initialize_web_driver()
-    filepath = "C:\\Users\\GiovanniPio\\Desktop\\programmi vari\\point clouds\\bidone\\bidone00001.jpg"
+    filepath = "C:\\Users\\Neo Dom-Z Mk. II\\Desktop\\repo hermes\\Hermes\\place_holder_donore_come_manfredi.png"\
+               + '\n' + "C:\\Users\\Neo Dom-Z Mk. II\\Desktop\\repo hermes\\Hermes\\place_holder_donore_come_manfredi.png"
     dodo = "+393466296727"
     clipboard_button = "_2jitM"
     send = "_165_h _2HL9j"
-    text = "smegmabottle"
+    text = ""
 
     driver.get("https://web.whatsapp.com/send?phone=" + dodo + "&text=" + text)
     time.sleep(5)
@@ -59,6 +73,7 @@ def send_img():
 
 send_img()
 
+"""
 
 """
 some saved urls

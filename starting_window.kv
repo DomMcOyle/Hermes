@@ -158,6 +158,7 @@ WindowManager:
             text_size: self.width, None
             height: self.texture_size[1]
 
+
         Label:
             id: excel_label
             shorten: True
@@ -168,6 +169,7 @@ WindowManager:
             text_size: self.width, None
             height: self.texture_size[1]
             pos_hint: {'x':0.35, 'top': 0.45}
+            padding : 15,0
 
         Label:
             text : "Indice di partenza: "
@@ -186,6 +188,7 @@ WindowManager:
             text_size: self.width, None
             height: self.texture_size[1]
             pos_hint: {'x':0.35, 'top': 0.40}
+            padding : 15,0
 
 
         Button:
@@ -206,6 +209,7 @@ WindowManager:
 
 <ProgressWindow>:
     name:"progress"
+    on_enter: self.send_loop()
     RelativeLayout:
         ProgressBar:
             id: p_bar
@@ -225,11 +229,13 @@ WindowManager:
 
 
         Button:
+            id: pause_button
             size_hint: 0.20,0.07
             pos_hint:{'y': 0.10, 'x': 0.25}
             text: "Pausa"
 
         Button:
+            id: stop_button
             size_hint: 0.20,0.07
             pos_hint:{'y': 0.10, 'right': 0.75}
             text: "Stop"
