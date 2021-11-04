@@ -7,7 +7,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from filereader import acquire_numbers_from_excel_file
 wa_button_send_id = "_4sWnG"
-from kivy.app import App
+from kivy.clock import Clock
 
 def initialize_web_driver():
     homedir = os.path.expanduser("~")
@@ -24,11 +24,13 @@ def initialize_web_driver():
 
 def wa_send(driver, string_of_photos):
     if string_of_photos:
+        clipboard_button = "_2jitM"
+        driver.find_element_by_class_name(clipboard_button).click()
         inv = driver.find_element_by_xpath("//input[@type='file']")
         inv.send_keys(string_of_photos)
     time.sleep(2)
     driver.find_element_by_xpath("//span[@data-icon='send']").click()
-    time.sleep(2)
+    time.sleep(6)
 
 
 def send_to_list(list_of_numbers, start_idx,  text_list, list_of_photos, window):
@@ -42,11 +44,13 @@ def send_to_list(list_of_numbers, start_idx,  text_list, list_of_photos, window)
     for i in range(start_idx, len(list_of_numbers)):
 #        driver.get("https://web.whatsapp.com/send?phone=" + list_of_numbers[i] + "&text=" + text_list[i])
         driver.get("https://web.whatsapp.com/send?phone=" + list_of_numbers[i] + "&text=" + text_list)
+        #Clock.schedule_once(lambda dt: wa_send(driver, string_of_photos), 8)
         time.sleep(8)
         wa_send(driver, string_of_photos)
         window.update_progress_bar()
     driver.close()
     window.finalize()
+
 
 """
 def send_img():
