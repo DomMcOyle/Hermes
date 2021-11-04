@@ -14,13 +14,53 @@ from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
+
+from filereader import check_rows
+from kivy.config import Config
 import constants
+
+Config.set("input", "mouse", "mouse,multitouch_on_demand")
+
+
+
 
 
 class MainWindow(Screen):
 
-    img_paths = []
-    current_image = 0
+    def check_and_recap(self):
+        app = App.get_running_app()
+        if not os.path.isfile(app.options.get_exc_path()):
+            Alert().fire("Non è stato selezionato un file valido", "Errore")
+            return
+        if self.ids.message_input.text == "":
+            Alert().fire("Non è stato inserito del testo da inviare.", "Errore")
+            return
+        for image in app.file_paths:
+            if not os.path.isfile(image):
+                Alert().fire("L'immagine " + os.path.basename(image) + " non è stata trovata.", "Errore")
+                return
+        start_index = app.options.get_last_index() + 1
+        if not self.ids.row_input.text == "":
+            start_index = int(self.ids.row_input.text)
+            exc_rows = check_rows(app.options.get_exc_path())
+            if start_index < 1 or start_index > exc_rows:
+                Alert().fire("L'indice non presenta un valore valido. (Il file selezionato ha " + str(exc_rows)
+                             + " righe)", "Errore")
+                return
+        app.message_txt = self.ids.message_input.text
+
+        next_window = self.manager.get_screen('recap')
+        next_window.ids.message_label.text = app.message_txt
+        next_window.ids.excel_label.text = app.options.get_exc_path()
+        next_window.ids.index_label.text = str(start_index)
+        imagelist = ""
+        for i in app.file_paths:
+            imagelist = imagelist + os.path.basename(i) + '\n'
+        next_window.ids.image_label.text = imagelist
+
+        self.manager.transition.direction = 'left'
+        self.manager.current = 'recap'
+
 
     def choose_file(self):
         Tk().withdraw()
@@ -134,6 +174,7 @@ class BaseApp(App):
         self.img_paths = []
         self.current_image = 0
         self.file_paths = []
+        self.message_txt = ""
         if not os.path.isfile(self.options.get_exc_path()):
             # if the file does not exist anymore, the path is disabled.
             self.options.set_exc_path("")

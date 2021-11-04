@@ -52,4 +52,8 @@ def fix_number(to_fix):
     return to_fix
 
 
-
+def check_rows(file_name):
+    wb = pd.read_excel(file_name, header=None, engine="openpyxl")
+    rows = len(wb.index)
+    del wb
+    return rows

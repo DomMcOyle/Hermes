@@ -37,16 +37,19 @@ WindowManager:
             text: "Invia"
             size_hint: 0.25,0.45
             font_size: 32
+            on_release: root.check_and_recap()
             pos_hint: {'top':0.52, 'x':0.74}
-            on_release: app.root.current = "recap"
 
         TextInput:
+            id: message_input
             hint_text: "Inserisci un messaggio..."
 
             size_hint: 0.30,0.20
             pos_hint: {'top':0.60, 'x':0.02}
 
         TextInput:
+            id: row_input
+            input_filter: 'int'
             hint_text: "Inserisci riga di partenza..."
             size_hint: 0.25,0.05
             pos_hint: {'top':0.60, 'x':0.74}
@@ -97,6 +100,107 @@ WindowManager:
 
 <RecapWindow>:
     name:"recap"
+    RelativeLayout:
+        id: layout
+        Label:
+            text : "Testo del messaggio: "
+            halign: 'left'
+            valign: 'center'
+            size_hint: (0.5,None)
+            text_size: self.width, None
+            height: 50
+            pos_hint: {'x':0.05, 'top': 0.95}
+            padding: 0,10
+        ScrollView:
+            do_scroll_x: False
+            do_scroll_y: True
+            pos_hint: {'x':0.35, 'top':0.95}
+            size_hint: 0.6, 0.2
+            scroll_type: ['bars']
+            bar_width: 15
+            Label:
+                id:message_label
+                size_hint_y: None
+                height: self.texture_size[1]
+                text_size: self.width, None
+                padding : 15,15
+
+        Label:
+            text : "Immagini selezionate: "
+            halign: 'left'
+            valign: 'center'
+            size_hint: (0.5,None)
+            text_size: self.width, None
+            height: 50
+            pos_hint: {'x':0.05, 'top': 0.70}
+            padding: 0,10
+        ScrollView:
+            do_scroll_x: False
+            do_scroll_y: True
+            pos_hint: {'x':0.35, 'top':0.70}
+            size_hint: 0.6, 0.2
+            scroll_type: ['bars']
+            bar_width: 15
+            Label:
+                id:image_label
+                size_hint_y: None
+                height: self.texture_size[1]
+                text_size: self.width, None
+                padding : 15,15
+
+
+        Label:
+            text : "File excel: "
+            halign: 'left'
+            valign: 'top'
+            size_hint: (0.4,0.1)
+            pos_hint: {'x':0.05, 'top': 0.45}
+            text_size: self.width, None
+            height: self.texture_size[1]
+
+        Label:
+            id: excel_label
+            shorten: True
+            shorten_from: 'left'
+            halign: 'left'
+            valign: 'top'
+            size_hint: (0.6, 0.1)
+            text_size: self.width, None
+            height: self.texture_size[1]
+            pos_hint: {'x':0.35, 'top': 0.45}
+
+        Label:
+            text : "Indice di partenza: "
+            halign: 'left'
+            valign: 'top'
+            size_hint: (0.4,0.1)
+            text_size: self.width, None
+            height: self.texture_size[1]
+            pos_hint: {'x':0.05, 'top': 0.40}
+
+        Label:
+            id: index_label
+            halign: 'left'
+            valign: 'top'
+            size_hint: (0.6, 0.1)
+            text_size: self.width, None
+            height: self.texture_size[1]
+            pos_hint: {'x':0.35, 'top': 0.40}
+
+
+        Button:
+            text:"Conferma e invia"
+            size_hint: 0.20,0.07
+            pos_hint:{'y': 0.10, 'right': 0.75}
+        Button:
+            text:"Indietro"
+            size_hint: 0.20,0.07
+            pos_hint:{'y': 0.10, 'x': 0.25}
+            on_release:
+                root.manager.transition.direction = 'right'
+                root.manager.current = 'main'
+
+
 
 <ProgressWindow>:
     name:"progress"
@@ -108,15 +212,17 @@ WindowManager:
     RelativeLayout:
         Label:
             id: alert_message
-            text_size: self.width, self.height
+            text_size: self.width, None
             size_hint: 0.9, 0.7
             height: self.texture_size[1]
             pos_hint:{'center_x':0.5, 'top':0.95}
             halign: 'auto'
             valign: 'middle'
             max_lines: 6
+
         Button:
             text: "Chiudi"
             pos_hint:{'y': 0.10, 'right': 0.95}
             size_hint : (0.3,0.2)
             on_release: root.dismiss()
+
