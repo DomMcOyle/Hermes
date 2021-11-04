@@ -101,10 +101,9 @@ WindowManager:
             size_hint: (0.5,None)
             text_size: self.width, None
             height: 50
-            pos_hint: {'x':0.1, 'top': 0.95}
+            pos_hint: {'x':0.05, 'top': 0.95}
             padding: 0,10
         ScrollView:
-            id: scroll_message
             do_scroll_x: False
             do_scroll_y: True
             pos_hint: {'x':0.35, 'top':0.95}
@@ -116,36 +115,31 @@ WindowManager:
                 size_hint_y: None
                 height: self.texture_size[1]
                 text_size: self.width, None
-                padding : 15,14
-
-
-
-
-
-
-
+                padding : 15,15
 
         Label:
             text : "Immagini selezionate: "
             halign: 'left'
-            valign: 'top'
-            size_hint: (0.4,None)
+            valign: 'center'
+            size_hint: (0.5,None)
             text_size: self.width, None
             height: 50
-            pos_hint: {'x':0.1, 'top': 0.70}
-
+            pos_hint: {'x':0.05, 'top': 0.70}
+            padding: 0,10
         ScrollView:
-            do_scroll_x : False
-            size_hint: (0.6, 0.4)
+            do_scroll_x: False
+            do_scroll_y: True
+            pos_hint: {'x':0.35, 'top':0.70}
+            size_hint: 0.6, 0.2
             scroll_type: ['bars']
-            pos_hint: {'x':0.5, 'top': 0.70}
+            bar_width: 15
             Label:
-                id: image_label
-                halign: 'left'
-                valign: 'top'
+                id:image_label
+                size_hint_y: None
+                height: self.texture_size[1]
                 text_size: self.width, None
-                size_hint: (0.4,None)
-                height: 50
+                padding : 15,15
+
 
         Label:
             text : "File excel: "
