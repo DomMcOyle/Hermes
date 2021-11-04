@@ -14,10 +14,15 @@ from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
+
 from filereader import check_rows
 from kivy.config import Config
+import constants
 
 Config.set("input", "mouse", "mouse,multitouch_on_demand")
+
+
+
 
 
 class MainWindow(Screen):
@@ -56,6 +61,7 @@ class MainWindow(Screen):
         self.manager.transition.direction = 'left'
         self.manager.current = 'recap'
 
+
     def choose_file(self):
         Tk().withdraw()
         filepath = filedialog.askopenfilename(title="Scegli un File Excel",
@@ -78,18 +84,23 @@ class MainWindow(Screen):
             Alert().fire('Il file "' + os.path.basename(path) + '" non è stato trovato nella cartella "' +
                         os.path.dirname(path) + '".', "Errore")
 
-
     def load_images(self):
         Tk().withdraw()
         filepaths = filedialog.askopenfilenames(title="Scegli le immagini/video da caricare",
                                                 filetypes=[("Multimedia", ".jpg .jpeg .png .gif .mp4 .avi")])
         if len(filepaths) == 0:
             return
+        self.update_carousel(filepaths)
 
-        images_paths = list(filepaths)
+    def update_carousel(self, filepaths):
+        app = App.get_running_app()
+        for elem in filepaths:
+            if elem not in app.file_paths:
+                app.file_paths.append(elem)
+        images_paths = list(app.file_paths)
 
         name_list = []
-        for elem in filepaths:
+        for elem in app.file_paths:
             name_list.append(elem.split("/")[-1])  # add to name list
             if name_list[-1].split(".")[1] == "mp4" or name_list[-1].split(".")[1] == "avi":
                 frame = self.extract_frame(elem, 30)
@@ -98,14 +109,22 @@ class MainWindow(Screen):
                 images_paths.remove(elem)
                 images_paths.append(prev_name)
 
-        app = App.get_running_app()
         app.img_paths = images_paths
-        self.ids.images_holder.source = images_paths[0]
+        if len(app.file_paths) > 0:
+            self.ids.images_holder.source = images_paths[0]
+        else:
+            self.ids.images_holder.source = constants.place_holder_image
         app.current_image = 0
-        app.file_paths = list(filepaths)
+
         names_to_show = str(name_list) \
             .replace("'", "").replace("[", "").replace("]", "").replace(",", "").replace(" ", "\n")
         self.ids.image_label.text = names_to_show
+
+    def remove_pic(self):
+        app = App.get_running_app()
+        if len(app.file_paths) > 0:
+            del app.file_paths[app.current_image]
+            self.update_carousel(app.file_paths)
 
     def extract_frame(self, elem, n_frame = 30):
         curr_video = cv2.VideoCapture(elem)
