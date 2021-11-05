@@ -195,7 +195,7 @@ class ProgressWindow(Screen):
 
     def update_progress_bar(self):
         self.ids.p_bar.value += 1
-        remaining = self.ids.p_bar.max - self.ids.p_bar.value
+        remaining = int(self.ids.p_bar.max - self.ids.p_bar.value)
         self.ids.p_label.text = "Invio dei messaggi...  (" + str(remaining) + " numeri rimanenti)"
 
     def finalize(self):

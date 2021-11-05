@@ -27,20 +27,17 @@ def initialize_web_driver():
 
 
 def wa_send(driver, string_of_photos):
+
     if string_of_photos:
+        wait_until(driver, "//span[@data-icon='clip']")
         driver.find_element_by_xpath("//span[@data-icon='clip']").click()
         inv = driver.find_element_by_xpath("//input[@type='file']")
         inv.send_keys(string_of_photos)
     time.sleep(2)
+    wait_until(driver, "//span[@data-icon='send']")
     driver.find_element_by_xpath("//span[@data-icon='send']").click()
-    try:
-        i = TIMEOUT
-        while i > 0:
-            driver.find_element_by_xpath("//span[@data-icon='msg-time']")
-            time.sleep(1)
-            i -= 1
-    except:
-        pass
+    time.sleep(1)
+    wait_until(driver, "//span[@data-icon='msg-time']", disappears=True)
 
 
 def send_to_list(list_of_numbers, start_idx,  text_list, list_of_photos, window):
@@ -57,7 +54,6 @@ def send_to_list(list_of_numbers, start_idx,  text_list, list_of_photos, window)
     update = True
     for i in range(start_idx, len(list_of_numbers)):
         try:
-            time.sleep(incremental_sleep)
             driver.get("https://web.whatsapp.com/send?phone=" + list_of_numbers[i] + "&text=" + text_list)
             time.sleep(incremental_sleep)
             wa_send(driver, string_of_photos)
@@ -89,6 +85,17 @@ def check_if_open(exename = 'chrome.exe'):
             return True
     return False
 
+
+def wait_until(driver, x_path_string, disappears=False):
+    i = TIMEOUT
+    if not disappears:
+        while i > 0 and len(driver.find_elements(By.XPATH, x_path_string)) == 0:
+            time.sleep(1)
+            i -= 1
+    else:
+        while i > 0 and len(driver.find_elements(By.XPATH, x_path_string)) > 0:
+            time.sleep(1)
+            i -= 1
 """
 def send_img():
     homedir, op, driver = initialize_web_driver()
