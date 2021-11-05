@@ -18,6 +18,7 @@ from kivy.uix.button import Button
 from filereader import check_rows, acquire_numbers_from_excel_file
 from kivy.config import Config
 from hermes import send_to_list
+from hermes import send_to_list_in_thread
 import constants
 
 Config.set("input", "mouse", "mouse,multitouch_on_demand")
@@ -184,7 +185,8 @@ class ProgressWindow(Screen):
             self.manager.transition.direction = 'right'
             self.manager.current = 'main'
             return
-        send_to_list(number_list, app.effective_starting_index, app.message_txt, app.file_paths, self)
+        print(app.effective_starting_index)
+        send_to_list_in_thread(number_list, app.effective_starting_index, app.message_txt, app.file_paths, self)
 
     def update_progress_bar(self):
         self.ids.p_bar.value += 1
