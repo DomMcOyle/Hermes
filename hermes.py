@@ -11,6 +11,7 @@ import threading
 import traceback
 import psutil
 
+TIMEOUT = 30
 
 def initialize_web_driver():
     homedir = os.path.expanduser("~")
@@ -27,13 +28,19 @@ def initialize_web_driver():
 
 def wa_send(driver, string_of_photos):
     if string_of_photos:
-        clipboard_button = "_2jitM"
-        driver.find_element_by_class_name(clipboard_button).click()
+        driver.find_element_by_xpath("//span[@data-icon='clip']").click()
         inv = driver.find_element_by_xpath("//input[@type='file']")
         inv.send_keys(string_of_photos)
-    time.sleep(1)
+    time.sleep(2)
     driver.find_element_by_xpath("//span[@data-icon='send']").click()
-    time.sleep(1)
+    try:
+        i = TIMEOUT
+        while i > 0:
+            driver.find_element_by_xpath("//span[@data-icon='msg-time']")
+            time.sleep(1)
+            i -= 1
+    except:
+        pass
 
 
 def send_to_list(list_of_numbers, start_idx,  text_list, list_of_photos, window):
@@ -47,19 +54,24 @@ def send_to_list(list_of_numbers, start_idx,  text_list, list_of_photos, window)
 
     print("effective range: " + str(range(start_idx, len(list_of_numbers))))
     incremental_sleep = 2
+    update = True
     for i in range(start_idx, len(list_of_numbers)):
         try:
             time.sleep(incremental_sleep)
             driver.get("https://web.whatsapp.com/send?phone=" + list_of_numbers[i] + "&text=" + text_list)
             time.sleep(incremental_sleep)
             wa_send(driver, string_of_photos)
+            update = True
         except:
             i -= 1
-            if incremental_sleep < 8: # da lanciare l'eccezione se aspetta troppo -- TIMEOUT
+            if incremental_sleep < TIMEOUT: # da lanciare l'eccezione se aspetta troppo -- TIMEOUT
                 incremental_sleep += 1
             time.sleep(incremental_sleep)
             traceback.print_exc()
-        window.update_progress_bar()
+        if update:
+            window.update_progress_bar()
+            if incremental_sleep > 2:
+                incremental_sleep -= 1
     driver.close()
     window.finalize()
 
@@ -101,8 +113,8 @@ def send_img():
 
 
 send_img()
-
 """
+
 
 """
 some saved urls

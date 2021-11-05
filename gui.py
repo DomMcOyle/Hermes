@@ -174,7 +174,7 @@ class RecapWindow(Screen):
         if check_if_open("chrome.exe"):
             Alert().fire("Google Chrome è attualmente in uso. Chiudere ogni finestra del browser e riprovare.", "Errore")
             return
-        
+
         self.manager.transition.direction = 'left'
         self.manager.current = 'progress'
 
@@ -195,7 +195,7 @@ class ProgressWindow(Screen):
 
     def update_progress_bar(self):
         self.ids.p_bar.value += 1
-        remaining = self.ids.p_bar.max - 1
+        remaining = self.ids.p_bar.max - self.ids.p_bar.value
         self.ids.p_label.text = "Invio dei messaggi...  (" + str(remaining) + " numeri rimanenti)"
 
     def finalize(self):
