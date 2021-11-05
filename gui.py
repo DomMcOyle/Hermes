@@ -3,6 +3,8 @@ from kivy.uix.widget import Widget
 from kivy.lang import Builder
 from kivy.uix.screenmanager import Screen, ScreenManager
 from tkinter import filedialog, Tk
+
+import Hermes.hermes
 from Options import Options
 import os
 from kivy.uix.image import Image
@@ -18,7 +20,7 @@ from kivy.uix.button import Button
 from filereader import check_rows, acquire_numbers_from_excel_file
 from kivy.config import Config
 from hermes import send_to_list
-from hermes import send_to_list_in_thread
+from hermes import send_to_list_in_thread, check_if_open
 import constants
 
 Config.set("input", "mouse", "mouse,multitouch_on_demand")
@@ -169,12 +171,17 @@ class RecapWindow(Screen):
             Alert().fire("Il file contenente i numeri è stato spostato o rimosso.", "Errore")
             return
 
+        if check_if_open("chrome.exe"):
+            Alert().fire("Google Chrome è attualmente in uso. Chiudere ogni finestra del browser e riprovare.", "Errore")
+            return
+        
         self.manager.transition.direction = 'left'
         self.manager.current = 'progress'
 
 
 class ProgressWindow(Screen):
     def send_loop(self):
+
         app = App.get_running_app()
         try:
             number_list, wrong_numbers = acquire_numbers_from_excel_file(app.options.get_exc_path())

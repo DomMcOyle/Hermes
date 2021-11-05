@@ -1,15 +1,15 @@
 import time
 from selenium import webdriver
+from selenium.common.exceptions import InvalidArgumentException
 from selenium.webdriver.chrome.options import Options
 #import xlrd
 import os.path
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from filereader import acquire_numbers_from_excel_file
-wa_button_send_id = "_4sWnG"
-from kivy.clock import Clock
 import threading
 import traceback
+import psutil
 
 
 def initialize_web_driver():
@@ -38,6 +38,7 @@ def wa_send(driver, string_of_photos):
 
 def send_to_list(list_of_numbers, start_idx,  text_list, list_of_photos, window):
     homedir, op, driver = initialize_web_driver()
+
     string_of_photos = ""
     if len(list_of_photos) > 0:
         string_of_photos = list_of_photos[0]
@@ -67,6 +68,14 @@ def send_to_list_in_thread(list_of_numbers, start_idx,  text_list, list_of_photo
     threading.Thread(target=send_to_list,
                      args=(list_of_numbers, start_idx,  text_list, list_of_photos, window),
                      daemon=True).start()
+
+
+def check_if_open(exename = 'chrome.exe'):
+    for proc in psutil.process_iter(['pid', 'name']):
+        # This will check if there exists any process running with executable name
+        if proc.info['name'] == exename:
+            return True
+    return False
 
 """
 def send_img():
