@@ -1,22 +1,46 @@
 #:import basename os.path.basename
 
+<Blue_button@Button>:
+    canvas.before:
+    background_normal: ''
+    #background_color: 0.05859375,0.0390625,0.69921875,1
+    #background_color: 0.1953125,0.167968751,0.94921875,1
+    #background_color: 0/256, 73/256, 184/256,1
+    background_color: 19/256, 138/256,168/256,1
+
+<Blue_input@TextInput>:
+    canvas.before:
+    background_normal: ''
+    #background_color: 0.2890625,0.3515625,0.5859375,1
+    #background_color: 0/256, 73/256, 184/256,1
+    background_color: 19/256, 138/256,168/256,1
+    foreground_color: 255/256,255/256,255/256,1
+    hint_text_color: 255/256,255/256,255/256,0.5
 WindowManager:
     MainWindow:
+
     RecapWindow:
     ProgressWindow:
 
+
+
 <MainWindow>:
+
     name: "main"
+
 
     RelativeLayout:
 
-        Button:
+
+        Blue_button:
             id: open_button
             text: "Apri"
             size_hint: 0.30,0.20
             pos_hint: {'top':0.95, 'x':0.02}
             font_size: 32
             on_release: root.choose_file()
+            #border: (0,0,0,0)
+
 
         Label:
             id: filename_label
@@ -24,7 +48,7 @@ WindowManager:
             size_hint: 0.15,0.15
             pos_hint: {'top':1.02, 'x':0.465}
 
-        Button:
+        Blue_button:
             id: visualize_button
             text: "Visualizza"
             size_hint: 0.40,0.10
@@ -33,25 +57,25 @@ WindowManager:
             disabled: not app.options.get_exc_path()
             on_release: root.preview_excel()
 
-        Button:
+        Blue_button:
             text: "Invia"
             size_hint: 0.25,0.45
             font_size: 32
             pos_hint: {'top':0.52, 'x':0.74}
             on_release: app.root.current = "recap"
 
-        TextInput:
+        Blue_input:
             hint_text: "Inserisci un messaggio..."
-
             size_hint: 0.30,0.20
             pos_hint: {'top':0.60, 'x':0.02}
 
-        TextInput:
+        Blue_input:
             hint_text: "Inserisci riga di partenza..."
             size_hint: 0.25,0.05
             pos_hint: {'top':0.60, 'x':0.74}
 
-        Button:
+
+        Blue_button:
             id: open_images
             text: "Aggiungi\nimmagine/video"
             size_hint: 0.30,0.20
@@ -72,26 +96,34 @@ WindowManager:
             pos_hint: {'top':0.35, 'x':0.38}
             source: "place_holder_donore_come_manfredi.PNG"
 
-        Button:
+
+        Blue_button:
             id: next_image_button
             text: ">"
             size_hint: 0.05, 0.10
             pos_hint: {'top':0.25, 'x':0.68}
             on_release: root.next_pic()
 
-        Button:
+        Blue_button:
             id: prev_image_button
             text: "<"
             size_hint: 0.05, 0.10
             pos_hint: {'top':0.25, 'x':0.33} #0.50
             on_release: root.prev_pic()
 
-        Button:
+        Blue_button:
             id: remove_image_button
             text: "rimuovi media"
             size_hint: 0.15, 0.10
             pos_hint: {'top':0.43, 'x':0.45} #0.50
             on_release: root.remove_pic()
+
+        Image:
+            id: logo
+            size_hint: 0.40,0.30
+            allow_stretch: True
+            pos_hint: {'top':0.95, 'x':0.67}
+            source: "hermes_logo_2.jpg"
 
 
 

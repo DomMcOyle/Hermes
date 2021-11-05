@@ -15,7 +15,8 @@ from kivy.uix.popup import Popup
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 import constants
-
+from kivy.graphics import Color
+from kivy.core.window import Window
 
 class MainWindow(Screen):
 
@@ -130,6 +131,8 @@ class Alert(Popup):
 
 class BaseApp(App):
     def build(self):
+        #Window.clearcolor = (0.140625, 0.21484375, 0.5, 1)
+        Window.clearcolor = (43/256, 60/256, 103/256, 1)
         self.options = Options()
         self.img_paths = []
         self.current_image = 0
