@@ -173,8 +173,6 @@ class RecapWindow(Screen):
         self.manager.current = 'progress'
 
 
-
-
 class ProgressWindow(Screen):
     def send_loop(self):
         app = App.get_running_app()

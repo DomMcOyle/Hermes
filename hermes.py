@@ -45,17 +45,19 @@ def send_to_list(list_of_numbers, start_idx,  text_list, list_of_photos, window)
             string_of_photos += ('\n' + list_of_photos[photo])
 
     print("effective range: " + str(range(start_idx, len(list_of_numbers))))
-    incremental_sleep = 0
+    incremental_sleep = 2
     for i in range(start_idx, len(list_of_numbers)):
         try:
+            time.sleep(incremental_sleep)
             driver.get("https://web.whatsapp.com/send?phone=" + list_of_numbers[i] + "&text=" + text_list)
-            time.sleep(1)
+            time.sleep(incremental_sleep)
             wa_send(driver, string_of_photos)
         except:
             i -= 1
-            if incremental_sleep < 8: #da lanciare l'eccezione se aspetta troppo -- TIMEOUT
+            if incremental_sleep < 8: # da lanciare l'eccezione se aspetta troppo -- TIMEOUT
                 incremental_sleep += 1
             time.sleep(incremental_sleep)
+            traceback.print_exc()
         window.update_progress_bar()
     driver.close()
     window.finalize()
