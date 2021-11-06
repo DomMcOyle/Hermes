@@ -4,12 +4,11 @@ from kivy.lang import Builder
 from kivy.uix.screenmanager import Screen, ScreenManager
 from tkinter import filedialog, Tk
 
-import Hermes.hermes
 from Options import Options
 import os
 from kivy.uix.image import Image
 from kivy.uix.carousel import Carousel
-
+from selenium.common.exceptions import WebDriverException
 import cv2
 
 from kivy.uix.label import Label
@@ -193,6 +192,10 @@ class ProgressWindow(Screen):
         print(app.effective_starting_index)
         send_to_list_in_thread(number_list, app.effective_starting_index, app.message_txt, app.file_paths, self)
 
+
+
+
+
     def update_progress_bar(self):
         self.ids.p_bar.value += 1
         remaining = int(self.ids.p_bar.max - self.ids.p_bar.value)
@@ -214,7 +217,7 @@ class WindowManager(ScreenManager):
 class Alert(Popup):
     def fire(self, message, title):
         self.ids.alert_message.text = message
-        self.title=title
+        self.title = title
         self.open()
     pass
 
@@ -241,4 +244,7 @@ class BaseApp(App):
 
 
 if __name__ == '__main__':
-    BaseApp().run()
+    try:
+        BaseApp().run()
+    except Exception as e:
+        print("CATTURATA")

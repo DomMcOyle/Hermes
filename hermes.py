@@ -2,7 +2,6 @@ import time
 from selenium import webdriver
 from selenium.common.exceptions import InvalidArgumentException
 from selenium.webdriver.chrome.options import Options
-#import xlrd
 import os.path
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
@@ -10,6 +9,7 @@ import threading
 import traceback
 import psutil
 from datetime import datetime
+from gui import Alert
 
 TIMEOUT = 30
 NUM_NOT_FOUND_ALERT = "_2Nr6U"
@@ -40,60 +40,64 @@ def wa_send(driver, string_of_photos):
     wait_until(driver, "//span[@data-icon='msg-time']", disappears=True)
 
 
-def send_to_list(list_of_numbers, start_idx,  text_list, list_of_photos, window):
-    homedir, op, driver = initialize_web_driver()
-    # controllo d'accesso (non mi viene un'idea migliore)
-    driver.get("https://web.whatsapp.com")  # apri whatsapp
-    wait_until(driver, "//div[@aria-label='Scan me!']", disappears=True)  # aspetta che il QR scompaia
-    wait_until(driver, "//div[@id='side']")  # aspetta che carichi la pagina
+def send_to_list(list_of_numbers, start_idx,  text_list, list_of_photos, window, eventual_exception):
+    try:
+        homedir, op, driver = initialize_web_driver()
+        # controllo d'accesso (non mi viene un'idea migliore)
+        driver.get("https://web.whatsapp.com")  # apri whatsapp
+        wait_until(driver, "//div[@aria-label='Scan me!']", disappears=True)  # aspetta che il QR scompaia          #lancia
+        wait_until(driver, "//div[@id='side']")  # aspetta che carichi la pagina                                    #lancia
+        raise Exception("AMMACCABANANE") #-------------------------da togliere
+        inexistent_numbers = []
 
-    inexistent_numbers = []
+        string_of_photos = ""
+        if len(list_of_photos) > 0:
+            string_of_photos = list_of_photos[0]
+            for photo in range(1, len(list_of_photos)):
+                string_of_photos += ('\n' + list_of_photos[photo])
 
-    string_of_photos = ""
-    if len(list_of_photos) > 0:
-        string_of_photos = list_of_photos[0]
-        for photo in range(1, len(list_of_photos)):
-            string_of_photos += ('\n' + list_of_photos[photo])
+        print("effective range: " + str(range(start_idx, len(list_of_numbers))))
 
-    print("effective range: " + str(range(start_idx, len(list_of_numbers))))
+        incremental_sleep = 3
 
-    incremental_sleep = 3
-    update = True
-    for i in range(start_idx, len(list_of_numbers)):
-        try:
-            driver.get("https://web.whatsapp.com/send?phone=" + list_of_numbers[i] + "&text=" + text_list)
+        for i in range(start_idx, len(list_of_numbers)):
+
+            driver.get("https://web.whatsapp.com/send?phone=" + list_of_numbers[i] + "&text=" + text_list) #lancia
             time.sleep(incremental_sleep)
 
-            #if len(driver.find_elements(By.CLASS_NAME, NUM_NOT_FOUND_ALERT)) > 0:
             if len(driver.find_elements(By.XPATH, "//*[contains(text(), 'via url non valido')]")) > 0:
                 inexistent_numbers.append([i, list_of_numbers[i]])
-                update = True
+
             else:
-                wa_send(driver, string_of_photos)
-                update = True
-        except:
-            i -= 1
-            if incremental_sleep < TIMEOUT: # da lanciare l'eccezione se aspetta troppo -- TIMEOUT
-                incremental_sleep += 1
-            time.sleep(incremental_sleep)
-            traceback.print_exc()
-        if update:
+                wa_send(driver, string_of_photos) #lancia
+
             window.update_progress_bar()
-            if incremental_sleep > 2:
-                incremental_sleep -= 1
-    driver.close()
-    not_found_warning = False
-    if len(inexistent_numbers) > 0:
-        print(inexistent_numbers)
-        not_found_warning = True
-        dump_inexistent_numbers(inexistent_numbers)
 
-    window.finalize(not_found_warning)
+        driver.close()
+        not_found_warning = False
+        if len(inexistent_numbers) > 0:
+            print(inexistent_numbers)
+            not_found_warning = True
+            dump_inexistent_numbers(inexistent_numbers)
+
+        window.finalize(not_found_warning)
+    except WebDriverException as e:
+        if e.message == "chrome not reachable":
+            Alert.fire("Chrome non raggiungibile.\n Se è stato chiuso premere nuovamente \"Invia\"")
+        else:
+            raise e
+    except Exception as e_standard:
+        if e_standard.message == constants.except_message_timeout_reached:
+            Alert.fire("Errore durante l'invio, controlla la connessione di rete e riprova")
+        elif e_standard.message == constants.except_message_qr:
+            Alert.fire("Tempo per l'autenticazione (QR code) scaduto, esegui l'accesso e riprova")
+        else:
+            raise e_standard
 
 
-def send_to_list_in_thread(list_of_numbers, start_idx,  text_list, list_of_photos, window):
+def send_to_list_in_thread(list_of_numbers, start_idx,  text_list, list_of_photos, window, eventual_exception):
     threading.Thread(target=send_to_list,
-                     args=(list_of_numbers, start_idx,  text_list, list_of_photos, window),
+                     args=(list_of_numbers, start_idx,  text_list, list_of_photos, window, eventual_exception),
                      daemon=True).start()
 
 
@@ -115,6 +119,7 @@ def wait_until(driver, x_path_string, disappears=False):
         while i > 0 and len(driver.find_elements(By.XPATH, x_path_string)) > 0:
             time.sleep(1)
             i -= 1
+    raise Exception()
 
 
 def dump_inexistent_numbers(number_list):
