@@ -195,7 +195,7 @@ class ProgressWindow(Screen):
         app.kill_thread = False
 
     def pause_send_thread(self):
-        print("Sto funzionando")
+
         app = App.get_running_app()
         if not app.pause_thread:
             app.pause_thread = True
@@ -229,7 +229,6 @@ class ProgressWindow(Screen):
             self.manager.transition.direction = 'right'
             self.manager.current = 'main'
             return
-        print(app.effective_starting_index)
         send_to_list_in_thread(number_list, app.effective_starting_index, app.message_txt, app.file_paths, self)
 
     def update_progress_bar(self):

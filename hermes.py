@@ -85,7 +85,6 @@ def send_to_list(list_of_numbers, start_idx,  text_list, list_of_photos, window)
     driver.close()
     not_found_warning = False
     if len(inexistent_numbers) > 0:
-        print(inexistent_numbers)
         not_found_warning = True
         dump_inexistent_numbers(inexistent_numbers)
 
@@ -128,7 +127,7 @@ def dump_inexistent_numbers(number_list):
 
 
 def update_driver():
-    print(chromedriver_autoinstaller.install())
+    chromedriver_autoinstaller.install()
 
 
 
