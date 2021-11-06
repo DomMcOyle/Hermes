@@ -65,13 +65,13 @@ def send_to_list(list_of_numbers, start_idx,  text_list, list_of_photos, window)
 
         for i in range(start_idx, len(list_of_numbers)):
             if window.get_kill_thread_value():
+                window.rollback(i)
+                return
+            while window.get_pause_thread_value():
+                if window.get_kill_thread_value():
                     window.rollback(i)
                     return
-                while window.get_pause_thread_value():
-                    if window.get_kill_thread_value():
-                        window.rollback(i)
-                        return
-                    time.sleep(1)
+                time.sleep(1)
             driver.get("https://web.whatsapp.com/send?phone=" + list_of_numbers[i] + "&text=" + text_list) #lancia
 
             time.sleep(incremental_sleep)
