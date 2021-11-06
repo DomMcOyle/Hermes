@@ -175,7 +175,7 @@ class RecapWindow(Screen):
 
 class ProgressWindow(Screen):
     def send_loop(self):
-
+        self.ids.pause_button.disabled = False
         app = App.get_running_app()
         try:
             number_list, wrong_numbers = acquire_numbers_from_excel_file(app.options.get_exc_path())
@@ -198,7 +198,6 @@ class ProgressWindow(Screen):
         self.manager.transition.direction = 'right'
         self.manager.current = 'recap'
 
-
     def update_progress_bar(self):
         self.ids.p_bar.value += 1
         remaining = int(self.ids.p_bar.max - self.ids.p_bar.value)
@@ -209,7 +208,6 @@ class ProgressWindow(Screen):
         if inexistent_number_found:
             self.ids.p_label.text += '\n ATTENZIONE: alcuni numeri sono risultati inesistenti e sono stati salvati' \
                                      ' in un file di testo "Numeri inesistenti"'
-        # TODO: fare attenzione alla disabilita del messaggio
         self.ids.pause_button.disabled = True
 
 
