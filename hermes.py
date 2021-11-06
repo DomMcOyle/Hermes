@@ -6,12 +6,13 @@ from selenium.webdriver.chrome.options import Options
 import os.path
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
-from filereader import acquire_numbers_from_excel_file
 import threading
 import traceback
 import psutil
+from datetime import datetime
 
 TIMEOUT = 30
+NUM_NOT_FOUND_ALERT = "_20C5O _2Zdgs"
 
 def initialize_web_driver():
     homedir = os.path.expanduser("~")
@@ -33,7 +34,6 @@ def wa_send(driver, string_of_photos):
         driver.find_element_by_xpath("//span[@data-icon='clip']").click()
         inv = driver.find_element_by_xpath("//input[@type='file']")
         inv.send_keys(string_of_photos)
-    time.sleep(2)
     wait_until(driver, "//span[@data-icon='send']")
     driver.find_element_by_xpath("//span[@data-icon='send']").click()
     time.sleep(1)
@@ -42,6 +42,7 @@ def wa_send(driver, string_of_photos):
 
 def send_to_list(list_of_numbers, start_idx,  text_list, list_of_photos, window):
     homedir, op, driver = initialize_web_driver()
+    inexistent_numbers = []
 
     string_of_photos = ""
     if len(list_of_photos) > 0:
@@ -56,8 +57,12 @@ def send_to_list(list_of_numbers, start_idx,  text_list, list_of_photos, window)
         try:
             driver.get("https://web.whatsapp.com/send?phone=" + list_of_numbers[i] + "&text=" + text_list)
             time.sleep(incremental_sleep)
-            wa_send(driver, string_of_photos)
-            update = True
+            if len(driver.find_elements(By.CLASS_NAME, NUM_NOT_FOUND_ALERT)) > 0:
+                inexistent_numbers.append([i, list_of_numbers[i]])
+                update = True
+            else:
+                wa_send(driver, string_of_photos)
+                update = True
         except:
             i -= 1
             if incremental_sleep < TIMEOUT: # da lanciare l'eccezione se aspetta troppo -- TIMEOUT
@@ -69,7 +74,13 @@ def send_to_list(list_of_numbers, start_idx,  text_list, list_of_photos, window)
             if incremental_sleep > 2:
                 incremental_sleep -= 1
     driver.close()
-    window.finalize()
+    not_found_warning = False
+    if len(inexistent_numbers) > 0:
+        print(inexistent_numbers)
+        not_found_warning = True
+        dump_inexistent_numbers(inexistent_numbers)
+
+    window.finalize(not_found_warning)
 
 
 def send_to_list_in_thread(list_of_numbers, start_idx,  text_list, list_of_photos, window):
@@ -96,6 +107,14 @@ def wait_until(driver, x_path_string, disappears=False):
         while i > 0 and len(driver.find_elements(By.XPATH, x_path_string)) > 0:
             time.sleep(1)
             i -= 1
+
+
+def dump_inexistent_numbers(number_list):
+    f = open("Numeri inesistenti " + str(datetime.now().date()) + ".txt", mode="a")
+    f.write("Indice\t\tNumero di telefono\n")
+    for number in number_list:
+        f.write(str(number[0]+1) + '\t\t' + str(number[1]) + '\n')
+    f.close()
 """
 def send_img():
     homedir, op, driver = initialize_web_driver()

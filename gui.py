@@ -198,8 +198,11 @@ class ProgressWindow(Screen):
         remaining = int(self.ids.p_bar.max - self.ids.p_bar.value)
         self.ids.p_label.text = "Invio dei messaggi...  (" + str(remaining) + " numeri rimanenti)"
 
-    def finalize(self):
+    def finalize(self, inexistent_number_found):
         self.ids.p_label.text = "Invio dei messaggi completato!"
+        if inexistent_number_found:
+            self.ids.p_label.text += '\n ATTENZIONE: alcuni numeri sono risultati inesistenti e sono stati salvati' \
+                                     ' in un file di testo "Numeri inesistenti"'
         # TODO: fare attenzione alla disabilita del messaggio
         self.ids.pause_button.disabled = True
 

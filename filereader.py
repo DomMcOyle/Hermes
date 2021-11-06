@@ -57,3 +57,4 @@ def check_rows(file_name):
     rows = len(wb.index)
     del wb
     return rows
+
