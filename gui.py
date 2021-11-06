@@ -4,7 +4,6 @@ from kivy.lang import Builder
 from kivy.uix.screenmanager import Screen, ScreenManager
 from tkinter import filedialog, Tk
 
-import Hermes.hermes
 from Options import Options
 import os
 from kivy.uix.image import Image
