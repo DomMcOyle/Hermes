@@ -1,6 +1,6 @@
 import time
 from selenium import webdriver
-from selenium.common.exceptions import InvalidArgumentException
+from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.chrome.options import Options
 import os.path
 from selenium.webdriver.common.keys import Keys
@@ -9,10 +9,11 @@ import threading
 import traceback
 import psutil
 from datetime import datetime
-from gui import Alert
 
-TIMEOUT = 30
-NUM_NOT_FOUND_ALERT = "_2Nr6U"
+import constants
+from alert import Alert, TimeoutException
+from debug import Log
+
 
 def initialize_web_driver():
     homedir = os.path.expanduser("~")
@@ -40,14 +41,14 @@ def wa_send(driver, string_of_photos):
     wait_until(driver, "//span[@data-icon='msg-time']", disappears=True)
 
 
-def send_to_list(list_of_numbers, start_idx,  text_list, list_of_photos, window, eventual_exception):
+def send_to_list(list_of_numbers, start_idx,  text_list, list_of_photos, window):
+    i = start_idx
     try:
         homedir, op, driver = initialize_web_driver()
         # controllo d'accesso (non mi viene un'idea migliore)
         driver.get("https://web.whatsapp.com")  # apri whatsapp
-        wait_until(driver, "//div[@aria-label='Scan me!']", disappears=True)  # aspetta che il QR scompaia          #lancia
-        wait_until(driver, "//div[@id='side']")  # aspetta che carichi la pagina                                    #lancia
-        raise Exception("AMMACCABANANE") #-------------------------da togliere
+        wait_until(driver, "//div[@aria-label='Scan me!']", disappears=True, exc=constants.except_message_qr)
+        wait_until(driver, "//div[@id='side']")
         inexistent_numbers = []
 
         string_of_photos = ""
@@ -69,7 +70,7 @@ def send_to_list(list_of_numbers, start_idx,  text_list, list_of_photos, window,
                 inexistent_numbers.append([i, list_of_numbers[i]])
 
             else:
-                wa_send(driver, string_of_photos) #lancia
+                wa_send(driver, string_of_photos)
 
             window.update_progress_bar()
 
@@ -82,26 +83,32 @@ def send_to_list(list_of_numbers, start_idx,  text_list, list_of_photos, window,
 
         window.finalize(not_found_warning)
     except WebDriverException as e:
-        if e.message == "chrome not reachable":
-            Alert.fire("Chrome non raggiungibile.\n Se è stato chiuso premere nuovamente \"Invia\"")
+        if e.msg == "chrome not reachable":
+            Alert().fire("Chrome non raggiungibile.\nSe è stato chiuso premere nuovamente \"Invia\"", "Errore")
+            window.rollback(i)
         else:
-            raise e
+            Alert().fire("Errore durante l'invio.\nControllare il file di log per maggiori dettagli", "Errore")
+            Log(e)
+    except TimeoutException as te:
+        if te.msg == constants.except_message_timeout_reached:
+            Alert().fire("Errore durante l'invio, controlla la connessione di rete e riprova", "Errore")
+            window.rollback(i)
+        elif te.msg == constants.except_message_qr:
+            Alert().fire("Tempo per l'autenticazione (QR code) scaduto, esegui l'accesso e riprova", "Errore")
+            window.rollback()
     except Exception as e_standard:
-        if e_standard.message == constants.except_message_timeout_reached:
-            Alert.fire("Errore durante l'invio, controlla la connessione di rete e riprova")
-        elif e_standard.message == constants.except_message_qr:
-            Alert.fire("Tempo per l'autenticazione (QR code) scaduto, esegui l'accesso e riprova")
-        else:
-            raise e_standard
+        Alert().fire("Errore durante l'invio.\nControllare il file di log per maggiori dettagli", "Errore")
+        Log(e_standard)
+        window.rollback()
 
 
-def send_to_list_in_thread(list_of_numbers, start_idx,  text_list, list_of_photos, window, eventual_exception):
+def send_to_list_in_thread(list_of_numbers, start_idx,  text_list, list_of_photos, window):
     threading.Thread(target=send_to_list,
-                     args=(list_of_numbers, start_idx,  text_list, list_of_photos, window, eventual_exception),
+                     args=(list_of_numbers, start_idx,  text_list, list_of_photos, window),
                      daemon=True).start()
 
 
-def check_if_open(exename = 'chrome.exe'):
+def check_if_open(exename='chrome.exe'):
     for proc in psutil.process_iter(['pid', 'name']):
         # This will check if there exists any process running with executable name
         if proc.info['name'] == exename:
@@ -109,8 +116,8 @@ def check_if_open(exename = 'chrome.exe'):
     return False
 
 
-def wait_until(driver, x_path_string, disappears=False):
-    i = TIMEOUT
+def wait_until(driver, x_path_string, disappears=False, exc=constants.except_message_timeout_reached):
+    i = constants.TIMEOUT
     if not disappears:
         while i > 0 and len(driver.find_elements(By.XPATH, x_path_string)) == 0:
             time.sleep(1)
@@ -119,7 +126,8 @@ def wait_until(driver, x_path_string, disappears=False):
         while i > 0 and len(driver.find_elements(By.XPATH, x_path_string)) > 0:
             time.sleep(1)
             i -= 1
-    raise Exception()
+    if i == 0:
+        raise TimeoutException(exc)
 
 
 def dump_inexistent_numbers(number_list):

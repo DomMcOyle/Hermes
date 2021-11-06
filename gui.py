@@ -11,14 +11,11 @@ from kivy.uix.carousel import Carousel
 from selenium.common.exceptions import WebDriverException
 import cv2
 
-from kivy.uix.label import Label
-from kivy.uix.popup import Popup
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.button import Button
+from alert import Alert
+from debug import Log
 
 from filereader import check_rows, acquire_numbers_from_excel_file
 from kivy.config import Config
-from hermes import send_to_list
 from hermes import send_to_list_in_thread, check_if_open
 import constants
 
@@ -192,8 +189,16 @@ class ProgressWindow(Screen):
         print(app.effective_starting_index)
         send_to_list_in_thread(number_list, app.effective_starting_index, app.message_txt, app.file_paths, self)
 
+    def rollback(self, index=None):
+        app = App.get_running_app()
 
+        if index is not None:
+            app.options.set_last_index(index)
+            next_window = self.manager.get_screen('recap')
+            next_window.ids.index_label.text = str(index)
 
+        self.manager.transition.direction = 'right'
+        self.manager.current = 'recap'
 
 
     def update_progress_bar(self):
@@ -212,16 +217,6 @@ class ProgressWindow(Screen):
 
 class WindowManager(ScreenManager):
     pass
-
-
-class Alert(Popup):
-    def fire(self, message, title):
-        self.ids.alert_message.text = message
-        self.title = title
-        self.open()
-    pass
-
-
 
 class BaseApp(App):
     def build(self):
@@ -245,6 +240,8 @@ class BaseApp(App):
 
 if __name__ == '__main__':
     try:
-        BaseApp().run()
+        app = BaseApp()
+        app.run()
     except Exception as e:
-        print("CATTURATA")
+        app.options.dump_options()
+        Log(e)

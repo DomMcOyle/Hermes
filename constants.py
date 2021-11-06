@@ -11,3 +11,5 @@ place_holder_image = "place_holder_donore_come_manfredi.PNG"
 
 except_message_timeout_reached = "timeout reached"
 except_message_qr = "qr phase not completed"
+
+TIMEOUT = 30 #timeout in seconds
