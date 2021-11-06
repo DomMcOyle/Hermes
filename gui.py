@@ -1,32 +1,29 @@
+from kivy.config import Config
+
 from kivy.app import App
-from kivy.uix.widget import Widget
 from kivy.lang import Builder
 from kivy.uix.screenmanager import Screen, ScreenManager
 from tkinter import filedialog, Tk
 
-from hermes import send_to_list_in_thread
 from Options import Options
 import os
-from kivy.uix.image import Image
-from kivy.uix.carousel import Carousel
-
 import cv2
 
-from kivy.uix.label import Label
-from kivy.uix.popup import Popup
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.button import Button
+from alert import Alert
+from debug import Log
 
 from filereader import check_rows, acquire_numbers_from_excel_file
+
+from hermes import send_to_list_in_thread, check_if_open
 from kivy.config import Config
 from hermes import send_to_list
 from hermes import send_to_list_in_thread, check_if_open, update_driver
 import constants
 
+
 Config.set("input", "mouse", "mouse,multitouch_on_demand")
-
-
-
+Config.set('graphics', 'minimum_width', '800')
+Config.set('graphics', 'minimum_height', '600')
 
 
 class MainWindow(Screen):
@@ -231,6 +228,17 @@ class ProgressWindow(Screen):
             return
         send_to_list_in_thread(number_list, app.effective_starting_index, app.message_txt, app.file_paths, self)
 
+    def rollback(self, index=None):
+        app = App.get_running_app()
+
+        if index is not None:
+            app.options.set_last_index(index)
+            next_window = self.manager.get_screen('recap')
+            next_window.ids.index_label.text = str(index)
+
+        self.manager.transition.direction = 'right'
+        self.manager.current = 'recap'
+
     def update_progress_bar(self):
         self.ids.p_bar.value += 1
         remaining = int(self.ids.p_bar.max - self.ids.p_bar.value)
@@ -241,7 +249,6 @@ class ProgressWindow(Screen):
         if inexistent_number_found:
             self.ids.p_label.text += '\n ATTENZIONE: alcuni numeri sono risultati inesistenti e sono stati salvati' \
                                      ' in un file di testo "Numeri inesistenti"'
-        # TODO: fare attenzione alla disabilita del messaggio
         self.ids.pause_button.disabled = True
         self.ids.stop_button.text = "Indietro"
         self.ids.stop_button.on_release = self.rollback
@@ -252,15 +259,6 @@ class ProgressWindow(Screen):
 
 class WindowManager(ScreenManager):
     pass
-
-
-class Alert(Popup):
-    def fire(self, message, title):
-        self.ids.alert_message.text = message
-        self.title=title
-        self.open()
-    pass
-
 
 class BaseApp(App):
     def build(self):
@@ -286,4 +284,12 @@ class BaseApp(App):
 
 
 if __name__ == '__main__':
-    BaseApp().run()
+    try:
+        app = BaseApp()
+        app.run()
+    except Exception as e:
+        app.options.dump_options()
+        for elem in app.img_paths:
+            if "_preview" in elem:
+                os.remove(elem)
+        Log(e)
