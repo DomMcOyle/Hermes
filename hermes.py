@@ -9,10 +9,12 @@ import threading
 import traceback
 import psutil
 from datetime import datetime
+import chromedriver_autoinstaller
 
 import constants
 from alert import Alert, TimeoutException
 from debug import Log
+
 
 
 def initialize_web_driver():
@@ -136,6 +138,13 @@ def dump_inexistent_numbers(number_list):
     for number in number_list:
         f.write(str(number[0]+1) + '\t\t' + str(number[1]) + '\n')
     f.close()
+
+
+def update_driver():
+    print(chromedriver_autoinstaller.install())
+
+
+
 """
 def send_img():
     homedir, op, driver = initialize_web_driver()

@@ -15,6 +15,9 @@ from debug import Log
 from filereader import check_rows, acquire_numbers_from_excel_file
 
 from hermes import send_to_list_in_thread, check_if_open
+from kivy.config import Config
+from hermes import send_to_list
+from hermes import send_to_list_in_thread, check_if_open, update_driver
 import constants
 
 
@@ -216,6 +219,7 @@ class WindowManager(ScreenManager):
 
 class BaseApp(App):
     def build(self):
+        update_driver()
         self.options = Options()
         self.img_paths = []
         self.current_image = 0
