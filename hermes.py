@@ -51,7 +51,6 @@ def send_to_list(list_of_numbers, start_idx,  text_list, list_of_photos, window)
         for photo in range(1, len(list_of_photos)):
             string_of_photos += ('\n' + list_of_photos[photo])
 
-    print("effective range: " + str(range(start_idx, len(list_of_numbers))))
     incremental_sleep = 2
     update = True
     for i in range(start_idx, len(list_of_numbers)):
