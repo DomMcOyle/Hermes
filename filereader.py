@@ -53,8 +53,7 @@ def fix_number(to_fix):
 
 
 def check_rows(file_name):
-    wb = pd.read_excel(file_name, header=None, engine="openpyxl")
-    rows = len(wb.index)
-    del wb
+    correct_numbers, wrong_number_indexes = acquire_numbers_from_excel_file(file_name)
+    rows = len(correct_numbers)
     return rows
 

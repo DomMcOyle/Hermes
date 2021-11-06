@@ -182,9 +182,9 @@ class ProgressWindow(Screen):
         app = App.get_running_app()
 
         if index is not None:
-            app.options.set_last_index(index)
             next_window = self.manager.get_screen('recap')
-            next_window.ids.index_label.text = str(index)
+            next_window.ids.index_label.text = str(index + 1)
+            app.options.set_last_index(index)
 
         self.manager.transition.direction = 'right'
         self.manager.current = 'recap'
@@ -227,17 +227,6 @@ class ProgressWindow(Screen):
             self.manager.current = 'main'
             return
         send_to_list_in_thread(number_list, app.effective_starting_index, app.message_txt, app.file_paths, self)
-
-    def rollback(self, index=None):
-        app = App.get_running_app()
-
-        if index is not None:
-            app.options.set_last_index(index)
-            next_window = self.manager.get_screen('recap')
-            next_window.ids.index_label.text = str(index)
-
-        self.manager.transition.direction = 'right'
-        self.manager.current = 'recap'
 
     def update_progress_bar(self):
         self.ids.p_bar.value += 1

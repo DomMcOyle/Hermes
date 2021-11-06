@@ -59,12 +59,12 @@ def send_to_list(list_of_numbers, start_idx,  text_list, list_of_photos, window)
             for photo in range(1, len(list_of_photos)):
                 string_of_photos += ('\n' + list_of_photos[photo])
 
-        print("effective range: " + str(range(start_idx, len(list_of_numbers))))
 
         incremental_sleep = 3
 
         for i in range(start_idx, len(list_of_numbers)):
             if window.get_kill_thread_value():
+
                 window.rollback(i)
                 return
             while window.get_pause_thread_value():
@@ -86,7 +86,6 @@ def send_to_list(list_of_numbers, start_idx,  text_list, list_of_photos, window)
         driver.close()
         not_found_warning = False
         if len(inexistent_numbers) > 0:
-            print(inexistent_numbers)
             not_found_warning = True
             dump_inexistent_numbers(inexistent_numbers)
 
