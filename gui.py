@@ -4,7 +4,7 @@ from kivy.lang import Builder
 from kivy.uix.screenmanager import Screen, ScreenManager
 from tkinter import filedialog, Tk
 
-import Hermes.hermes
+from hermes import send_to_list_in_thread
 from Options import Options
 import os
 from kivy.uix.image import Image
@@ -20,7 +20,7 @@ from kivy.uix.button import Button
 from filereader import check_rows, acquire_numbers_from_excel_file
 from kivy.config import Config
 from hermes import send_to_list
-from hermes import send_to_list_in_thread, check_if_open
+from hermes import send_to_list_in_thread, check_if_open, update_driver
 import constants
 
 Config.set("input", "mouse", "mouse,multitouch_on_demand")
@@ -219,9 +219,9 @@ class Alert(Popup):
     pass
 
 
-
 class BaseApp(App):
     def build(self):
+        update_driver()
         self.options = Options()
         self.img_paths = []
         self.current_image = 0

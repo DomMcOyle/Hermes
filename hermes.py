@@ -2,7 +2,6 @@ import time
 from selenium import webdriver
 from selenium.common.exceptions import InvalidArgumentException
 from selenium.webdriver.chrome.options import Options
-#import xlrd
 import os.path
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
@@ -10,9 +9,11 @@ import threading
 import traceback
 import psutil
 from datetime import datetime
+import chromedriver_autoinstaller
 
 TIMEOUT = 30
 NUM_NOT_FOUND_ALERT = "_20C5O _2Zdgs"
+
 
 def initialize_web_driver():
     homedir = os.path.expanduser("~")
@@ -115,6 +116,13 @@ def dump_inexistent_numbers(number_list):
     for number in number_list:
         f.write(str(number[0]+1) + '\t\t' + str(number[1]) + '\n')
     f.close()
+
+
+def update_driver():
+    print(chromedriver_autoinstaller.install())
+
+
+
 """
 def send_img():
     homedir, op, driver = initialize_web_driver()
