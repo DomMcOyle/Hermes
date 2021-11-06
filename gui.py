@@ -1,28 +1,26 @@
+from kivy.config import Config
+
 from kivy.app import App
-from kivy.uix.widget import Widget
 from kivy.lang import Builder
 from kivy.uix.screenmanager import Screen, ScreenManager
 from tkinter import filedialog, Tk
 
 from Options import Options
 import os
-from kivy.uix.image import Image
-from kivy.uix.carousel import Carousel
-from selenium.common.exceptions import WebDriverException
 import cv2
 
 from alert import Alert
 from debug import Log
 
 from filereader import check_rows, acquire_numbers_from_excel_file
-from kivy.config import Config
+
 from hermes import send_to_list_in_thread, check_if_open
 import constants
 
+
 Config.set("input", "mouse", "mouse,multitouch_on_demand")
-
-
-
+Config.set('graphics', 'minimum_width', '800')
+Config.set('graphics', 'minimum_height', '600')
 
 
 class MainWindow(Screen):
@@ -244,4 +242,7 @@ if __name__ == '__main__':
         app.run()
     except Exception as e:
         app.options.dump_options()
+        for elem in app.img_paths:
+            if "_preview" in elem:
+                os.remove(elem)
         Log(e)
