@@ -42,6 +42,11 @@ def wa_send(driver, string_of_photos):
 
 def send_to_list(list_of_numbers, start_idx,  text_list, list_of_photos, window):
     homedir, op, driver = initialize_web_driver()
+    # controllo d'accesso (non mi viene un'idea migliore)
+    driver.get("https://web.whatsapp.com")  # apri whatsapp
+    wait_until(driver, "//div[@aria-label='Scan me!']", disappears=True)  # aspetta che il QR scompaia
+    wait_until(driver, "//div[@id='side']")  # aspetta che carichi la pagina
+
     inexistent_numbers = []
 
     string_of_photos = ""
@@ -51,12 +56,14 @@ def send_to_list(list_of_numbers, start_idx,  text_list, list_of_photos, window)
             string_of_photos += ('\n' + list_of_photos[photo])
 
     print("effective range: " + str(range(start_idx, len(list_of_numbers))))
-    incremental_sleep = 2
+
+    incremental_sleep = 3
     update = True
     for i in range(start_idx, len(list_of_numbers)):
         try:
             driver.get("https://web.whatsapp.com/send?phone=" + list_of_numbers[i] + "&text=" + text_list)
             time.sleep(incremental_sleep)
+
             if len(driver.find_elements(By.CLASS_NAME, NUM_NOT_FOUND_ALERT)) > 0:
                 inexistent_numbers.append([i, list_of_numbers[i]])
                 update = True
