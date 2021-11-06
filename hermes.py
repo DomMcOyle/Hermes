@@ -64,8 +64,16 @@ def send_to_list(list_of_numbers, start_idx,  text_list, list_of_photos, window)
         incremental_sleep = 3
 
         for i in range(start_idx, len(list_of_numbers)):
-
+            if window.get_kill_thread_value():
+                    window.rollback(i)
+                    return
+                while window.get_pause_thread_value():
+                    if window.get_kill_thread_value():
+                        window.rollback(i)
+                        return
+                    time.sleep(1)
             driver.get("https://web.whatsapp.com/send?phone=" + list_of_numbers[i] + "&text=" + text_list) #lancia
+
             time.sleep(incremental_sleep)
 
             if len(driver.find_elements(By.XPATH, "//*[contains(text(), 'via url non valido')]")) > 0:
@@ -75,7 +83,6 @@ def send_to_list(list_of_numbers, start_idx,  text_list, list_of_photos, window)
                 wa_send(driver, string_of_photos)
 
             window.update_progress_bar()
-
         driver.close()
         not_found_warning = False
         if len(inexistent_numbers) > 0:
@@ -102,6 +109,7 @@ def send_to_list(list_of_numbers, start_idx,  text_list, list_of_photos, window)
         Alert().fire("Errore durante l'invio.\nControllare il file di log per maggiori dettagli", "Errore")
         Log(e_standard)
         window.rollback()
+
 
 
 def send_to_list_in_thread(list_of_numbers, start_idx,  text_list, list_of_photos, window):
@@ -141,41 +149,4 @@ def dump_inexistent_numbers(number_list):
 
 
 def update_driver():
-    print(chromedriver_autoinstaller.install())
-
-
-
-"""
-def send_img():
-    homedir, op, driver = initialize_web_driver()
-    filepath = "C:\\Users\\Neo Dom-Z Mk. II\\Desktop\\repo hermes\\Hermes\\place_holder_donore_come_manfredi.png"\
-               + '\n' + "C:\\Users\\Neo Dom-Z Mk. II\\Desktop\\repo hermes\\Hermes\\place_holder_donore_come_manfredi.png"
-    dodo = "+393466296727"
-    clipboard_button = "_2jitM"
-    send = "_165_h _2HL9j"
-    text = ""
-
-    driver.get("https://web.whatsapp.com/send?phone=" + dodo + "&text=" + text)
-    time.sleep(5)
-    driver.find_element_by_class_name(clipboard_button).click()
-    #time.sleep(1)
-    inv = driver.find_element_by_xpath("//input[@type='file']")
-    inv.send_keys(filepath)
-    time.sleep(3)
-    #driver.find_elements_by_class_name(send)[0].click()
-    wa_send(driver)
-
-
-
-
-send_img()
-"""
-
-
-"""
-some saved urls
-
-#driver.get("https://www.google.com/search?q=lala&oq=lala&aqs=chrome..69i57.423j0j9&sourceid=chrome&ie=UTF-8")
-#driver.get("https://web.whatsapp.com/")
-#driver.find_element_by_class_name(cname).send_keys(Keys.control() + "v")
-"""
+    chromedriver_autoinstaller.install()
