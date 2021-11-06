@@ -165,6 +165,7 @@ class RecapWindow(Screen):
 
         rows = check_rows(app.options.get_exc_path())
         next_window.ids.p_bar.max = rows - app.effective_starting_index
+        next_window.ids.p_bar.value = 0
         next_window.ids.p_label.text = "Invio dei messaggi...  (" + str(next_window.ids.p_bar.max) + " numeri rimanenti)"
 
         if not os.path.isfile(app.options.get_exc_path()):
@@ -180,9 +181,47 @@ class RecapWindow(Screen):
 
 
 class ProgressWindow(Screen):
-    def send_loop(self):
-
+    def rollback(self, index=None):
         app = App.get_running_app()
+
+        if index is not None:
+            app.options.set_last_index(index)
+            next_window = self.manager.get_screen('recap')
+            next_window.ids.index_label.text = str(index)
+
+        self.manager.transition.direction = 'right'
+        self.manager.current = 'recap'
+        app.pause_thread = False
+        app.kill_thread = False
+
+    def pause_send_thread(self):
+        print("Sto funzionando")
+        app = App.get_running_app()
+        if not app.pause_thread:
+            app.pause_thread = True
+            self.ids.pause_button.text = "Riprendi"
+        elif app.pause_thread:
+            app.pause_thread = False
+            self.ids.pause_button.text = "Pausa"
+
+    def kill_thread_saving_index(self):
+        app = App.get_running_app()
+        app.kill_thread = True
+
+    def get_pause_thread_value(self):
+        app = App.get_running_app()
+        return app.pause_thread
+
+    def get_kill_thread_value(self):
+        app = App.get_running_app()
+        return app.kill_thread
+
+    def send_loop(self):
+        app = App.get_running_app()
+        #self.ids.p_bar.value = 0
+        #self.ids.p_bar.min = app.effective_starting_index
+        self.ids.stop_button.text = "Stop"
+        self.ids.stop_button.on_release = self.kill_thread_saving_index
         try:
             number_list, wrong_numbers = acquire_numbers_from_excel_file(app.options.get_exc_path())
         except:
@@ -198,13 +237,18 @@ class ProgressWindow(Screen):
         remaining = int(self.ids.p_bar.max - self.ids.p_bar.value)
         self.ids.p_label.text = "Invio dei messaggi...  (" + str(remaining) + " numeri rimanenti)"
 
-    def finalize(self, inexistent_number_found):
+    def finalize_send(self, inexistent_number_found):
         self.ids.p_label.text = "Invio dei messaggi completato!"
         if inexistent_number_found:
             self.ids.p_label.text += '\n ATTENZIONE: alcuni numeri sono risultati inesistenti e sono stati salvati' \
                                      ' in un file di testo "Numeri inesistenti"'
         # TODO: fare attenzione alla disabilita del messaggio
         self.ids.pause_button.disabled = True
+        self.ids.stop_button.text = "Indietro"
+        self.ids.stop_button.on_release = self.rollback
+
+
+
 
 
 class WindowManager(ScreenManager):
@@ -228,6 +272,8 @@ class BaseApp(App):
         self.file_paths = []
         self.message_txt = ""
         self.effective_starting_index = 0
+        self.pause_thread = False
+        self.kill_thread = False
         if not os.path.isfile(self.options.get_exc_path()):
             # if the file does not exist anymore, the path is disabled.
             self.options.set_exc_path("")

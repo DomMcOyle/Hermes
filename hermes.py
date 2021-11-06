@@ -55,6 +55,14 @@ def send_to_list(list_of_numbers, start_idx,  text_list, list_of_photos, window)
     incremental_sleep = 2
     update = True
     for i in range(start_idx, len(list_of_numbers)):
+        if window.get_kill_thread_value():
+            window.rollback(i)
+            return
+        while window.get_pause_thread_value():
+            if window.get_kill_thread_value():
+                window.rollback(i)
+                return
+            time.sleep(1)
         try:
             driver.get("https://web.whatsapp.com/send?phone=" + list_of_numbers[i] + "&text=" + text_list)
             time.sleep(incremental_sleep)
@@ -81,7 +89,8 @@ def send_to_list(list_of_numbers, start_idx,  text_list, list_of_photos, window)
         not_found_warning = True
         dump_inexistent_numbers(inexistent_numbers)
 
-    window.finalize(not_found_warning)
+    window.finalize_send(not_found_warning)
+
 
 
 def send_to_list_in_thread(list_of_numbers, start_idx,  text_list, list_of_photos, window):
