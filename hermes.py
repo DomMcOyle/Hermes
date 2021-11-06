@@ -12,7 +12,7 @@ import psutil
 from datetime import datetime
 
 TIMEOUT = 30
-NUM_NOT_FOUND_ALERT = "_20C5O _2Zdgs"
+NUM_NOT_FOUND_ALERT = "_2Nr6U"
 
 def initialize_web_driver():
     homedir = os.path.expanduser("~")
@@ -64,7 +64,8 @@ def send_to_list(list_of_numbers, start_idx,  text_list, list_of_photos, window)
             driver.get("https://web.whatsapp.com/send?phone=" + list_of_numbers[i] + "&text=" + text_list)
             time.sleep(incremental_sleep)
 
-            if len(driver.find_elements(By.CLASS_NAME, NUM_NOT_FOUND_ALERT)) > 0:
+            #if len(driver.find_elements(By.CLASS_NAME, NUM_NOT_FOUND_ALERT)) > 0:
+            if len(driver.find_elements(By.XPATH, "//*[contains(text(), 'via url non valido')]")) > 0:
                 inexistent_numbers.append([i, list_of_numbers[i]])
                 update = True
             else:
