@@ -91,7 +91,7 @@ WindowManager:
 
         Button:
             id: remove_image_button
-            text: "rimuovi media"
+            text: "Rimuovi media"
             size_hint: 0.15, 0.10
             pos_hint: {'top':0.43, 'x':0.45} #0.50
             on_release: root.remove_pic()
@@ -158,6 +158,7 @@ WindowManager:
             text_size: self.width, None
             height: self.texture_size[1]
 
+
         Label:
             id: excel_label
             shorten: True
@@ -168,6 +169,7 @@ WindowManager:
             text_size: self.width, None
             height: self.texture_size[1]
             pos_hint: {'x':0.35, 'top': 0.45}
+            padding : 15,0
 
         Label:
             text : "Indice di partenza: "
@@ -186,12 +188,15 @@ WindowManager:
             text_size: self.width, None
             height: self.texture_size[1]
             pos_hint: {'x':0.35, 'top': 0.40}
+            padding : 15,0
 
 
         Button:
             text:"Conferma e invia"
             size_hint: 0.20,0.07
             pos_hint:{'y': 0.10, 'right': 0.75}
+            on_release: root.start_send()
+
         Button:
             text:"Indietro"
             size_hint: 0.20,0.07
@@ -204,6 +209,36 @@ WindowManager:
 
 <ProgressWindow>:
     name:"progress"
+    on_enter: self.send_loop()
+    RelativeLayout:
+        ProgressBar:
+            id: p_bar
+            size_hint_x: 0.8
+            pos_hint: {'center_x':0.5, 'center_y': 0.55}
+            value: 0
+            min: 0
+        Label:
+            id: p_label
+            pos_hint: {'center_x':0.5, 'center_y': 0.51}
+            halign: 'left'
+            valign: 'top'
+            size_hint_x: 0.8
+            text_size: self.width, None
+            height: self.texture_size[1]
+
+
+
+        Button:
+            id: pause_button
+            size_hint: 0.20,0.07
+            pos_hint:{'y': 0.10, 'x': 0.25}
+            text: "Pausa"
+
+        Button:
+            id: stop_button
+            size_hint: 0.20,0.07
+            pos_hint:{'y': 0.10, 'right': 0.75}
+            text: "Stop"
 
 <Alert>:
     name:"alert"
