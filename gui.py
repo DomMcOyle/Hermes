@@ -16,13 +16,14 @@ from debug import Log
 from filereader import check_rows, acquire_numbers_from_excel_file
 
 from kivy.config import Config
+from kivy.core.window import Window
 from hermes import send_to_list_in_thread, check_if_open, update_driver
 import constants
 
 
 Config.set("input", "mouse", "mouse,multitouch_on_demand")
-Config.set('graphics', 'minimum_width', '800')
-Config.set('graphics', 'minimum_height', '600')
+Window.size = (800, 600)
+Window.minimum_width, Window.minimum_height = Window.size
 
 
 class MainWindow(Screen):
@@ -32,7 +33,7 @@ class MainWindow(Screen):
         if not os.path.isfile(app.options.get_exc_path()):
             Alert().fire("Non è stato selezionato un file valido", "Errore")
             return
-        if self.ids.message_input.text == "" and len(app.file_paths) == 0:
+        if self.ids.message_input.text.strip() == "" and len(app.file_paths) == 0:
             Alert().fire("Non è stato inserito del testo o immagini da inviare.", "Errore")
             return
         for image in app.file_paths:
@@ -53,7 +54,7 @@ class MainWindow(Screen):
                              + " righe)", "Errore")
                 return
 
-        app.message_txt = self.ids.message_input.text
+        app.message_txt = self.ids.message_input.text.strip()
 
         next_window = self.manager.get_screen('recap')
         next_window.ids.message_label.text = app.message_txt
@@ -124,8 +125,9 @@ class MainWindow(Screen):
             self.ids.images_holder.source = constants.place_holder_image
         app.current_image = 0
 
-        names_to_show = str(name_list) \
-            .replace("'", "").replace("[", "").replace("]", "").replace(",", "").replace(" ", "\n")
+        names_to_show = ""
+        for name in name_list:
+            names_to_show += (name + '\n')
         self.ids.image_label.text = names_to_show
 
     def remove_pic(self):
@@ -220,8 +222,7 @@ class ProgressWindow(Screen):
 
     def send_loop(self):
         app = App.get_running_app()
-        #self.ids.p_bar.value = 0
-        #self.ids.p_bar.min = app.effective_starting_index
+        self.ids.pause_button.disabled = False
         self.ids.stop_button.text = "Stop"
         self.ids.stop_button.on_release = self.kill_thread_saving_index
         try:
@@ -265,6 +266,8 @@ class BaseApp(App):
         self.effective_starting_index = 0
         self.pause_thread = False
         self.kill_thread = False
+        self.title = 'Hermes'
+        self.icon = "hermes_logo_2.jpg"
         if not os.path.isfile(self.options.get_exc_path()):
             # if the file does not exist anymore, the path is disabled.
             self.options.set_exc_path("")

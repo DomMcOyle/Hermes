@@ -1,6 +1,6 @@
 import time
 from selenium import webdriver
-from selenium.common.exceptions import WebDriverException
+from selenium.common.exceptions import WebDriverException, NoSuchWindowException
 from selenium.webdriver.chrome.options import Options
 import os.path
 from selenium.webdriver.common.keys import Keys
@@ -103,6 +103,10 @@ def send_to_list(list_of_numbers, wrong_num_idx, start_idx,  text_list, list_of_
         else:
             Alert().fire("Errore durante l'invio.\nControllare il file di log per maggiori dettagli", "Errore")
             Log(e)
+            window.rollback(i)
+    except NoSuchWindowException:
+            Alert().fire("Chrome non raggiungibile.\nSe è stato chiuso premere nuovamente \"Invia\"", "Errore")
+            window.rollback(i)
     except TimeoutException as te:
         if te.msg == constants.except_message_timeout_reached:
             Alert().fire("Errore durante l'invio, controlla la connessione di rete e riprova", "Errore")
@@ -112,8 +116,9 @@ def send_to_list(list_of_numbers, wrong_num_idx, start_idx,  text_list, list_of_
             window.rollback()
     except Exception as e_standard:
         Alert().fire("Errore durante l'invio.\nControllare il file di log per maggiori dettagli", "Errore")
-        Log(e_standard)
         window.rollback()
+        Log(e_standard)
+
 
 
 def send_to_list_in_thread(list_of_numbers, wrong_num, start_idx,  text_list, list_of_photos, window):
