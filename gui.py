@@ -248,6 +248,7 @@ class ProgressWindow(Screen):
         self.ids.pause_button.disabled = True
         self.ids.stop_button.text = "Indietro"
         self.ids.stop_button.on_release = self.rollback
+        App.get_running_app().options.set_last_index(0)
 
 
 

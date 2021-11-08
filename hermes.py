@@ -45,7 +45,7 @@ def wa_send(driver, string_of_photos):
 
 def send_to_list(list_of_numbers, wrong_num_idx, start_idx,  text_list, list_of_photos, window):
     i = start_idx
-    num_wrong_index = 0
+    num_wrong = 0
     try:
         homedir, op, driver = initialize_web_driver()
         # controllo d'accesso (non mi viene un'idea migliore)
@@ -61,6 +61,9 @@ def send_to_list(list_of_numbers, wrong_num_idx, start_idx,  text_list, list_of_
                 string_of_photos += ('\n' + list_of_photos[photo])
         total_rows = len(list_of_numbers) + len(wrong_num_idx)
 
+        print(start_idx)
+        print(total_rows)
+        print(wrong_num_idx)
         for i in range(start_idx, total_rows):
             if window.get_kill_thread_value():
                 window.rollback(i)
@@ -71,17 +74,20 @@ def send_to_list(list_of_numbers, wrong_num_idx, start_idx,  text_list, list_of_
                     return
                 time.sleep(1)
             if i not in wrong_num_idx:
-                driver.get("https://web.whatsapp.com/send?phone=" + list_of_numbers[i-num_wrong_index] + "&text=" + text_list) #lancia
+                driver.get("https://web.whatsapp.com/send?phone=" + list_of_numbers[i-num_wrong] + "&text=" + text_list) #lancia
+                time.sleep(1)
                 wait_until(driver, "//div[@id='side']")
+                time.sleep(1)
                 if len(driver.find_elements(By.XPATH, "//*[contains(text(), 'via url non valido')]")) > 0:
-                    inexistent_numbers.append([i, list_of_numbers[i-num_wrong_index]])
+                    inexistent_numbers.append([i, list_of_numbers[i-num_wrong]])
 
                 else:
                     wa_send(driver, string_of_photos)
             else:
                 inexistent_numbers.append([i, "Numero incorretto."])
-                num_wrong_index = num_wrong_index + 1
-
+                num_wrong = wrong_num_idx.index(i) + 1
+            print(num_wrong)
+            print(i)
             window.update_progress_bar()
         driver.close()
         not_found_warning = False
