@@ -1,7 +1,24 @@
 #:import basename os.path.basename
 
+<Blue_button@Button>:
+    canvas.before:
+    background_normal: ''
+    #background_color: 0.05859375,0.0390625,0.69921875,1
+    #background_color: 0.1953125,0.167968751,0.94921875,1
+    #background_color: 0/256, 73/256, 184/256,1
+    background_color: 19/256, 138/256,168/256,1
+
+<Blue_input@TextInput>:
+    canvas.before:
+    background_normal: ''
+    #background_color: 0.2890625,0.3515625,0.5859375,1
+    #background_color: 0/256, 73/256, 184/256,1
+    background_color: 19/256, 138/256,168/256,1
+    foreground_color: 255/256,255/256,255/256,1
+    hint_text_color: 255/256,255/256,255/256,0.5
 WindowManager:
     MainWindow:
+
     RecapWindow:
     ProgressWindow:
 
@@ -10,7 +27,7 @@ WindowManager:
 
     RelativeLayout:
 
-        Button:
+        Blue_button:
             id: open_button
             text: "Apri"
             size_hint: 0.30,0.20
@@ -24,7 +41,7 @@ WindowManager:
             size_hint: 0.15,0.15
             pos_hint: {'top':1.02, 'x':0.465}
 
-        Button:
+        Blue_button:
             id: visualize_button
             text: "Visualizza"
             size_hint: 0.40,0.10
@@ -33,7 +50,7 @@ WindowManager:
             disabled: not app.options.get_exc_path()
             on_release: root.preview_excel()
 
-        Button:
+        Blue_button:
             text: "Invia"
             size_hint: 0.25,0.45
             font_size: 32
@@ -54,7 +71,7 @@ WindowManager:
             size_hint: 0.25,0.05
             pos_hint: {'top':0.60, 'x':0.74}
 
-        Button:
+        Blue_button:
             id: open_images
             text: "Aggiungi\nimmagine/video"
             size_hint: 0.30,0.20
@@ -62,11 +79,22 @@ WindowManager:
             font_size: 20
             on_release: root.load_images()
 
-        Label:
-            id: image_label
-            text: basename("Nessun immagine selezionata")
-            size_hint: 0.30,0.30
+        ScrollView:
+            do_scroll_x: True
+            do_scroll_y: True
             pos_hint: {'top':0.74, 'x':0.385}
+            size_hint: 0.3, 0.3
+            scroll_type: ['bars']
+            bar_width: 15
+            always_overscroll: False
+            Label:
+                id:image_label
+                size_hint: None, None
+                height: self.texture_size[1]
+                width: self.texture_size[0]
+                #text_size: self.width, None
+                text: basename("Nessun immagine selezionata")
+                padding : 15,15
 
         Image:
             id: images_holder
@@ -75,21 +103,21 @@ WindowManager:
             pos_hint: {'top':0.35, 'x':0.38}
             source: "place_holder_donore_come_manfredi.PNG"
 
-        Button:
+        Blue_button:
             id: next_image_button
             text: ">"
             size_hint: 0.05, 0.10
             pos_hint: {'top':0.25, 'x':0.68}
             on_release: root.next_pic()
 
-        Button:
+        Blue_button:
             id: prev_image_button
             text: "<"
             size_hint: 0.05, 0.10
             pos_hint: {'top':0.25, 'x':0.33} #0.50
             on_release: root.prev_pic()
 
-        Button:
+        Blue_button:
             id: remove_image_button
             text: "Rimuovi media"
             size_hint: 0.15, 0.10
@@ -191,13 +219,13 @@ WindowManager:
             padding : 15,0
 
 
-        Button:
+        Blue_button:
             text:"Conferma e invia"
             size_hint: 0.20,0.07
             pos_hint:{'y': 0.10, 'right': 0.75}
             on_release: root.start_send()
 
-        Button:
+        Blue_button:
             text:"Indietro"
             size_hint: 0.20,0.07
             pos_hint:{'y': 0.10, 'x': 0.25}
@@ -228,7 +256,7 @@ WindowManager:
 
 
 
-        Button:
+        Blue_button:
             id: pause_button
             size_hint: 0.20,0.07
             pos_hint:{'y': 0.10, 'x': 0.25}
@@ -237,7 +265,7 @@ WindowManager:
 
 
 
-        Button:
+        Blue_button:
             id: stop_button
             size_hint: 0.20,0.07
             pos_hint:{'y': 0.10, 'right': 0.75}
@@ -260,9 +288,8 @@ WindowManager:
             valign: 'middle'
             max_lines: 6
 
-        Button:
+        Blue_button:
             text: "Chiudi"
             pos_hint:{'y': 0.10, 'right': 0.95}
             size_hint : (0.3,0.2)
             on_release: root.dismiss()
-

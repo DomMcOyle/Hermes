@@ -1,6 +1,7 @@
 from kivy.config import Config
 
 from kivy.app import App
+from kivy.graphics.svg import Window
 from kivy.lang import Builder
 from kivy.uix.screenmanager import Screen, ScreenManager
 from tkinter import filedialog, Tk
@@ -14,9 +15,7 @@ from debug import Log
 
 from filereader import check_rows, acquire_numbers_from_excel_file
 
-from hermes import send_to_list_in_thread, check_if_open
 from kivy.config import Config
-from hermes import send_to_list
 from hermes import send_to_list_in_thread, check_if_open, update_driver
 import constants
 
@@ -243,14 +242,12 @@ class ProgressWindow(Screen):
         self.ids.stop_button.on_release = self.rollback
 
 
-
-
-
 class WindowManager(ScreenManager):
     pass
 
 class BaseApp(App):
     def build(self):
+        Window.clearcolor = (43 / 256, 60 / 256, 103 / 256, 1)
         update_driver()
         self.options = Options()
         self.img_paths = []
@@ -282,3 +279,5 @@ if __name__ == '__main__':
             if "_preview" in elem:
                 os.remove(elem)
         Log(e)
+
+
