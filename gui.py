@@ -40,10 +40,12 @@ class MainWindow(Screen):
                 Alert().fire("L'immagine " + os.path.basename(image) + " non è stata trovata.", "Errore")
                 return
         start_index = app.options.get_last_index() + 1
-        exc_rows = check_rows(app.options.get_exc_path())
-        if exc_rows < 1:
-            Alert().fire("Il file selezionato è vuoto", "Errore")
+        try:
+            exc_rows = check_rows(app.options.get_exc_path())
+        except: # lancia un'eccezione se non trova colonne valide
+            Alert().fire("Il file selezionato è vuoto o non presenta numeri di telefono validi.", "Errore")
             return
+
         if not self.ids.row_input.text == "":
             start_index = int(self.ids.row_input.text)
             if start_index < 1 or start_index > exc_rows:
@@ -158,8 +160,12 @@ class RecapWindow(Screen):
         app = App.get_running_app()
         app.effective_starting_index = int(self.ids.index_label.text)-1
         next_window = self.manager.get_screen('progress')
+        try:
+            rows = check_rows(app.options.get_exc_path())
+        except:  # lancia un'eccezione se non trova colonne valide
+            Alert().fire("Il file selezionato è vuoto o non presenta numeri di telefono validi.", "Errore")
+            return
 
-        rows = check_rows(app.options.get_exc_path())
         next_window.ids.p_bar.max = rows - app.effective_starting_index
         next_window.ids.p_bar.value = 0
         next_window.ids.p_label.text = "Invio dei messaggi...  (" + str(next_window.ids.p_bar.max) + " numeri rimanenti)"
@@ -225,7 +231,8 @@ class ProgressWindow(Screen):
             self.manager.transition.direction = 'right'
             self.manager.current = 'main'
             return
-        send_to_list_in_thread(number_list, app.effective_starting_index, app.message_txt, app.file_paths, self)
+        send_to_list_in_thread(number_list, wrong_numbers, app.effective_starting_index, app.message_txt, app.file_paths, self)
+
 
     def update_progress_bar(self):
         self.ids.p_bar.value += 1
@@ -240,6 +247,7 @@ class ProgressWindow(Screen):
         self.ids.pause_button.disabled = True
         self.ids.stop_button.text = "Indietro"
         self.ids.stop_button.on_release = self.rollback
+        App.get_running_app().options.set_last_index(0)
 
 
 class WindowManager(ScreenManager):

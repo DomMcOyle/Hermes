@@ -43,8 +43,9 @@ def wa_send(driver, string_of_photos):
     wait_until(driver, "//span[@data-icon='msg-time']", disappears=True)
 
 
-def send_to_list(list_of_numbers, start_idx,  text_list, list_of_photos, window):
+def send_to_list(list_of_numbers, wrong_num_idx, start_idx,  text_list, list_of_photos, window):
     i = start_idx
+    num_wrong = 0
     try:
         homedir, op, driver = initialize_web_driver()
         # controllo d'accesso (non mi viene un'idea migliore)
@@ -58,13 +59,13 @@ def send_to_list(list_of_numbers, start_idx,  text_list, list_of_photos, window)
             string_of_photos = list_of_photos[0]
             for photo in range(1, len(list_of_photos)):
                 string_of_photos += ('\n' + list_of_photos[photo])
+        total_rows = len(list_of_numbers) + len(wrong_num_idx)
 
-
-        incremental_sleep = 3
-
-        for i in range(start_idx, len(list_of_numbers)):
+        print(start_idx)
+        print(total_rows)
+        print(wrong_num_idx)
+        for i in range(start_idx, total_rows):
             if window.get_kill_thread_value():
-
                 window.rollback(i)
                 return
             while window.get_pause_thread_value():
@@ -72,16 +73,21 @@ def send_to_list(list_of_numbers, start_idx,  text_list, list_of_photos, window)
                     window.rollback(i)
                     return
                 time.sleep(1)
-            driver.get("https://web.whatsapp.com/send?phone=" + list_of_numbers[i] + "&text=" + text_list) #lancia
+            if i not in wrong_num_idx:
+                driver.get("https://web.whatsapp.com/send?phone=" + list_of_numbers[i-num_wrong] + "&text=" + text_list) #lancia
+                time.sleep(1)
+                wait_until(driver, "//div[@id='side']")
+                time.sleep(1)
+                if len(driver.find_elements(By.XPATH, "//*[contains(text(), 'via url non valido')]")) > 0:
+                    inexistent_numbers.append([i, list_of_numbers[i-num_wrong]])
 
-            time.sleep(incremental_sleep)
-
-            if len(driver.find_elements(By.XPATH, "//*[contains(text(), 'via url non valido')]")) > 0:
-                inexistent_numbers.append([i, list_of_numbers[i]])
-
+                else:
+                    wa_send(driver, string_of_photos)
             else:
-                wa_send(driver, string_of_photos)
-
+                inexistent_numbers.append([i, "Numero incorretto."])
+                num_wrong = wrong_num_idx.index(i) + 1
+            print(num_wrong)
+            print(i)
             window.update_progress_bar()
         driver.close()
         not_found_warning = False
@@ -89,7 +95,7 @@ def send_to_list(list_of_numbers, start_idx,  text_list, list_of_photos, window)
             not_found_warning = True
             dump_inexistent_numbers(inexistent_numbers)
 
-        window.finalize(not_found_warning)
+        window.finalize_send(not_found_warning)
     except WebDriverException as e:
         if e.msg == "chrome not reachable":
             Alert().fire("Chrome non raggiungibile.\nSe è stato chiuso premere nuovamente \"Invia\"", "Errore")
@@ -110,10 +116,9 @@ def send_to_list(list_of_numbers, start_idx,  text_list, list_of_photos, window)
         window.rollback()
 
 
-
-def send_to_list_in_thread(list_of_numbers, start_idx,  text_list, list_of_photos, window):
+def send_to_list_in_thread(list_of_numbers, wrong_num, start_idx,  text_list, list_of_photos, window):
     threading.Thread(target=send_to_list,
-                     args=(list_of_numbers, start_idx,  text_list, list_of_photos, window),
+                     args=(list_of_numbers, wrong_num, start_idx,  text_list, list_of_photos, window),
                      daemon=True).start()
 
 
@@ -141,9 +146,9 @@ def wait_until(driver, x_path_string, disappears=False, exc=constants.except_mes
 
 def dump_inexistent_numbers(number_list):
     f = open("Numeri inesistenti " + str(datetime.now().date()) + ".txt", mode="a")
-    f.write("Indice\t\tNumero di telefono\n")
+    f.write("Indice\t\t\t\tNumero di telefono\n")
     for number in number_list:
-        f.write(str(number[0]+1) + '\t\t' + str(number[1]) + '\n')
+        f.write(str(number[0]+1) + '\t\t\t\t' + str(number[1]) + '\n')
     f.close()
 
 

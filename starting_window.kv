@@ -278,6 +278,7 @@ WindowManager:
     size: 500, 250
     size_hint: None, None
     RelativeLayout:
+        id:popup_layout
         Label:
             id: alert_message
             text_size: self.width, None
@@ -293,3 +294,4 @@ WindowManager:
             pos_hint:{'y': 0.10, 'right': 0.95}
             size_hint : (0.3,0.2)
             on_release: root.dismiss()
+
