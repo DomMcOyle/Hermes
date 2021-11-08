@@ -43,8 +43,9 @@ def wa_send(driver, string_of_photos):
     wait_until(driver, "//span[@data-icon='msg-time']", disappears=True)
 
 
-def send_to_list(list_of_numbers, start_idx,  text_list, list_of_photos, window):
+def send_to_list(list_of_numbers, wrong_num_idx, start_idx,  text_list, list_of_photos, window):
     i = start_idx
+    num_wrong_index = 0
     try:
         homedir, op, driver = initialize_web_driver()
         # controllo d'accesso (non mi viene un'idea migliore)
@@ -58,10 +59,10 @@ def send_to_list(list_of_numbers, start_idx,  text_list, list_of_photos, window)
             string_of_photos = list_of_photos[0]
             for photo in range(1, len(list_of_photos)):
                 string_of_photos += ('\n' + list_of_photos[photo])
+        total_rows = len(list_of_numbers) + len(wrong_num_idx)
 
-        for i in range(start_idx, len(list_of_numbers)):
+        for i in range(start_idx, total_rows):
             if window.get_kill_thread_value():
-
                 window.rollback(i)
                 return
             while window.get_pause_thread_value():
@@ -69,13 +70,17 @@ def send_to_list(list_of_numbers, start_idx,  text_list, list_of_photos, window)
                     window.rollback(i)
                     return
                 time.sleep(1)
-            driver.get("https://web.whatsapp.com/send?phone=" + list_of_numbers[i] + "&text=" + text_list) #lancia
-            wait_until(driver, "//div[@id='side']")
-            if len(driver.find_elements(By.XPATH, "//*[contains(text(), 'via url non valido')]")) > 0:
-                inexistent_numbers.append([i, list_of_numbers[i]])
+            if i not in wrong_num_idx:
+                driver.get("https://web.whatsapp.com/send?phone=" + list_of_numbers[i-num_wrong_index] + "&text=" + text_list) #lancia
+                wait_until(driver, "//div[@id='side']")
+                if len(driver.find_elements(By.XPATH, "//*[contains(text(), 'via url non valido')]")) > 0:
+                    inexistent_numbers.append([i, list_of_numbers[i-num_wrong_index]])
 
+                else:
+                    wa_send(driver, string_of_photos)
             else:
-                wa_send(driver, string_of_photos)
+                inexistent_numbers.append([i, "Numero incorretto."])
+                num_wrong_index = num_wrong_index + 1
 
             window.update_progress_bar()
         driver.close()
@@ -105,10 +110,9 @@ def send_to_list(list_of_numbers, start_idx,  text_list, list_of_photos, window)
         window.rollback()
 
 
-
-def send_to_list_in_thread(list_of_numbers, start_idx,  text_list, list_of_photos, window):
+def send_to_list_in_thread(list_of_numbers, wrong_num, start_idx,  text_list, list_of_photos, window):
     threading.Thread(target=send_to_list,
-                     args=(list_of_numbers, start_idx,  text_list, list_of_photos, window),
+                     args=(list_of_numbers, wrong_num, start_idx,  text_list, list_of_photos, window),
                      daemon=True).start()
 
 

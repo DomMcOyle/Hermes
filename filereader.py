@@ -54,6 +54,6 @@ def fix_number(to_fix):
 
 def check_rows(file_name):
     correct_numbers, wrong_number_indexes = acquire_numbers_from_excel_file(file_name)
-    rows = len(correct_numbers)
+    rows = len(correct_numbers) + len(wrong_number_indexes)
     return rows
 
