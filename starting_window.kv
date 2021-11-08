@@ -22,15 +22,10 @@ WindowManager:
     RecapWindow:
     ProgressWindow:
 
-
-
 <MainWindow>:
-
     name: "main"
 
-
     RelativeLayout:
-
 
         Blue_button:
             id: open_button
@@ -39,8 +34,6 @@ WindowManager:
             pos_hint: {'top':0.95, 'x':0.02}
             font_size: 32
             on_release: root.choose_file()
-            #border: (0,0,0,0)
-
 
         Label:
             id: filename_label
@@ -61,19 +54,22 @@ WindowManager:
             text: "Invia"
             size_hint: 0.25,0.45
             font_size: 32
+            on_release: root.check_and_recap()
             pos_hint: {'top':0.52, 'x':0.74}
-            on_release: app.root.current = "recap"
 
-        Blue_input:
+        TextInput:
+            id: message_input
             hint_text: "Inserisci un messaggio..."
+
             size_hint: 0.30,0.20
             pos_hint: {'top':0.60, 'x':0.02}
 
-        Blue_input:
+        TextInput:
+            id: row_input
+            input_filter: 'int'
             hint_text: "Inserisci riga di partenza..."
             size_hint: 0.25,0.05
             pos_hint: {'top':0.60, 'x':0.74}
-
 
         Blue_button:
             id: open_images
@@ -83,11 +79,22 @@ WindowManager:
             font_size: 20
             on_release: root.load_images()
 
-        Label:
-            id: image_label
-            text: basename("Nessun immagine selezionata")
-            size_hint: 0.30,0.30
+        ScrollView:
+            do_scroll_x: True
+            do_scroll_y: True
             pos_hint: {'top':0.74, 'x':0.385}
+            size_hint: 0.3, 0.3
+            scroll_type: ['bars']
+            bar_width: 15
+            always_overscroll: False
+            Label:
+                id:image_label
+                size_hint: None, None
+                height: self.texture_size[1]
+                width: self.texture_size[0]
+                #text_size: self.width, None
+                text: basename("Nessun immagine selezionata")
+                padding : 15,15
 
         Image:
             id: images_holder
@@ -95,7 +102,6 @@ WindowManager:
             allow_stretch: True
             pos_hint: {'top':0.35, 'x':0.38}
             source: "place_holder_donore_come_manfredi.PNG"
-
 
         Blue_button:
             id: next_image_button
@@ -113,25 +119,159 @@ WindowManager:
 
         Blue_button:
             id: remove_image_button
-            text: "rimuovi media"
+            text: "Rimuovi media"
             size_hint: 0.15, 0.10
             pos_hint: {'top':0.43, 'x':0.45} #0.50
             on_release: root.remove_pic()
-
-        Image:
-            id: logo
-            size_hint: 0.40,0.30
-            allow_stretch: True
-            pos_hint: {'top':0.95, 'x':0.67}
-            source: "hermes_logo_2.jpg"
 
 
 
 <RecapWindow>:
     name:"recap"
+    RelativeLayout:
+        id: layout
+        Label:
+            text : "Testo del messaggio: "
+            halign: 'left'
+            valign: 'center'
+            size_hint: (0.5,None)
+            text_size: self.width, None
+            height: 50
+            pos_hint: {'x':0.05, 'top': 0.95}
+            padding: 0,10
+        ScrollView:
+            do_scroll_x: False
+            do_scroll_y: True
+            pos_hint: {'x':0.35, 'top':0.95}
+            size_hint: 0.6, 0.2
+            scroll_type: ['bars']
+            bar_width: 15
+            Label:
+                id:message_label
+                size_hint_y: None
+                height: self.texture_size[1]
+                text_size: self.width, None
+                padding : 15,15
+
+        Label:
+            text : "Immagini selezionate: "
+            halign: 'left'
+            valign: 'center'
+            size_hint: (0.5,None)
+            text_size: self.width, None
+            height: 50
+            pos_hint: {'x':0.05, 'top': 0.70}
+            padding: 0,10
+        ScrollView:
+            do_scroll_x: False
+            do_scroll_y: True
+            pos_hint: {'x':0.35, 'top':0.70}
+            size_hint: 0.6, 0.2
+            scroll_type: ['bars']
+            bar_width: 15
+            Label:
+                id:image_label
+                size_hint_y: None
+                height: self.texture_size[1]
+                text_size: self.width, None
+                padding : 15,15
+
+
+        Label:
+            text : "File excel: "
+            halign: 'left'
+            valign: 'top'
+            size_hint: (0.4,0.1)
+            pos_hint: {'x':0.05, 'top': 0.45}
+            text_size: self.width, None
+            height: self.texture_size[1]
+
+
+        Label:
+            id: excel_label
+            shorten: True
+            shorten_from: 'left'
+            halign: 'left'
+            valign: 'top'
+            size_hint: (0.6, 0.1)
+            text_size: self.width, None
+            height: self.texture_size[1]
+            pos_hint: {'x':0.35, 'top': 0.45}
+            padding : 15,0
+
+        Label:
+            text : "Indice di partenza: "
+            halign: 'left'
+            valign: 'top'
+            size_hint: (0.4,0.1)
+            text_size: self.width, None
+            height: self.texture_size[1]
+            pos_hint: {'x':0.05, 'top': 0.40}
+
+        Label:
+            id: index_label
+            halign: 'left'
+            valign: 'top'
+            size_hint: (0.6, 0.1)
+            text_size: self.width, None
+            height: self.texture_size[1]
+            pos_hint: {'x':0.35, 'top': 0.40}
+            padding : 15,0
+
+
+        Blue_button:
+            text:"Conferma e invia"
+            size_hint: 0.20,0.07
+            pos_hint:{'y': 0.10, 'right': 0.75}
+            on_release: root.start_send()
+
+        Blue_button:
+            text:"Indietro"
+            size_hint: 0.20,0.07
+            pos_hint:{'y': 0.10, 'x': 0.25}
+            on_release:
+                root.manager.transition.direction = 'right'
+                root.manager.current = 'main'
+
+
 
 <ProgressWindow>:
     name:"progress"
+    on_enter: self.send_loop()
+    RelativeLayout:
+        ProgressBar:
+            id: p_bar
+            size_hint_x: 0.8
+            pos_hint: {'center_x':0.5, 'center_y': 0.55}
+            value: 0
+            min: 0
+        Label:
+            id: p_label
+            pos_hint: {'center_x':0.5, 'center_y': 0.51}
+            halign: 'left'
+            valign: 'top'
+            size_hint_x: 0.8
+            text_size: self.width, None
+            height: self.texture_size[1]
+
+
+
+        Blue_button:
+            id: pause_button
+            size_hint: 0.20,0.07
+            pos_hint:{'y': 0.10, 'x': 0.25}
+            text: "Pausa"
+            on_release: root.pause_send_thread()
+
+
+
+        Blue_button:
+            id: stop_button
+            size_hint: 0.20,0.07
+            pos_hint:{'y': 0.10, 'right': 0.75}
+            text: "Stop"
+            on_release: root.kill_thread_saving_index()
+
 
 <Alert>:
     name:"alert"
@@ -140,14 +280,15 @@ WindowManager:
     RelativeLayout:
         Label:
             id: alert_message
-            text_size: self.width, self.height
+            text_size: self.width, None
             size_hint: 0.9, 0.7
             height: self.texture_size[1]
             pos_hint:{'center_x':0.5, 'top':0.95}
             halign: 'auto'
             valign: 'middle'
             max_lines: 6
-        Button:
+
+        Blue_button:
             text: "Chiudi"
             pos_hint:{'y': 0.10, 'right': 0.95}
             size_hint : (0.3,0.2)
