@@ -61,12 +61,10 @@ def send_to_list(list_of_numbers, start_idx,  text_list, list_of_photos, window)
 
         print("effective range: " + str(range(start_idx, len(list_of_numbers))))
 
-        incremental_sleep = 3
-
         for i in range(start_idx, len(list_of_numbers)):
 
             driver.get("https://web.whatsapp.com/send?phone=" + list_of_numbers[i] + "&text=" + text_list) #lancia
-            time.sleep(incremental_sleep)
+            wait_until(driver, "//div[@id='side']")
 
             if len(driver.find_elements(By.XPATH, "//*[contains(text(), 'via url non valido')]")) > 0:
                 inexistent_numbers.append([i, list_of_numbers[i]])
