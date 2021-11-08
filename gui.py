@@ -232,16 +232,7 @@ class ProgressWindow(Screen):
             self.manager.transition.direction = 'right'
             self.manager.current = 'main'
             return
-        if len(wrong_numbers) > 0:
-            message = "Le seguenti righe non contengono numeri o contengono numeri di telefono incorretti. Proseguire comunque?\n"
-            for index in wrong_numbers:
-                message += (str(index)+'\n')
-            Alert().fire_with_callback(message,
-                                       "Attenzione",
-                                       lambda a: send_to_list_in_thread(number_list, app.effective_starting_index, app.message_txt, app.file_paths, self))
-            return
-        else:
-            send_to_list_in_thread(number_list, wrong_numbers, app.effective_starting_index, app.message_txt, app.file_paths, self)
+        send_to_list_in_thread(number_list, wrong_numbers, app.effective_starting_index, app.message_txt, app.file_paths, self)
 
 
     def update_progress_bar(self):

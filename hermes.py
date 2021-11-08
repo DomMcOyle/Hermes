@@ -89,7 +89,7 @@ def send_to_list(list_of_numbers, wrong_num_idx, start_idx,  text_list, list_of_
             not_found_warning = True
             dump_inexistent_numbers(inexistent_numbers)
 
-        window.finalize(not_found_warning)
+        window.finalize_send(not_found_warning)
     except WebDriverException as e:
         if e.msg == "chrome not reachable":
             Alert().fire("Chrome non raggiungibile.\nSe è stato chiuso premere nuovamente \"Invia\"", "Errore")
@@ -140,9 +140,9 @@ def wait_until(driver, x_path_string, disappears=False, exc=constants.except_mes
 
 def dump_inexistent_numbers(number_list):
     f = open("Numeri inesistenti " + str(datetime.now().date()) + ".txt", mode="a")
-    f.write("Indice\t\tNumero di telefono\n")
+    f.write("Indice\t\t\t\tNumero di telefono\n")
     for number in number_list:
-        f.write(str(number[0]+1) + '\t\t' + str(number[1]) + '\n')
+        f.write(str(number[0]+1) + '\t\t\t\t' + str(number[1]) + '\n')
     f.close()
 
 
