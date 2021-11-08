@@ -1,4 +1,5 @@
 #:import basename os.path.basename
+#:import place_holder_image constants.place_holder_image
 
 <Blue_button@Button>:
     canvas.before:
@@ -101,7 +102,7 @@ WindowManager:
             size_hint: 0.30,0.30
             allow_stretch: True
             pos_hint: {'top':0.35, 'x':0.38}
-            source: "place_holder_donore_come_manfredi.PNG"
+            source: place_holder_image
 
         Blue_button:
             id: next_image_button
