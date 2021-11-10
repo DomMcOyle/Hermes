@@ -1,22 +1,17 @@
-from kivy.config import Config
-
 from kivy.app import App
-from kivy.graphics.svg import Window
 from kivy.lang import Builder
 from kivy.uix.screenmanager import Screen, ScreenManager
+from kivy.config import Config
+from kivy.core.window import Window
 from tkinter import filedialog, Tk
 
-from Options import Options
 import os
 import cv2
 
+from Options import Options
 from alert import Alert
 from debug import Log
-
 from filereader import check_rows, acquire_numbers_from_excel_file
-
-from kivy.config import Config
-from kivy.core.window import Window
 from hermes import send_to_list_in_thread, check_if_open, update_driver
 import constants
 
