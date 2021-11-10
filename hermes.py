@@ -3,12 +3,14 @@ from selenium.webdriver.common.by import By
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException, NoSuchWindowException
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from subprocess import CREATE_NO_WINDOW
 
 from datetime import datetime
 import time
 import os.path
 import threading
-import traceback
+
 
 import psutil
 import chromedriver_autoinstaller
@@ -21,12 +23,15 @@ from debug import Log
 
 def initialize_web_driver():
     homedir = os.path.expanduser("~")
+
     op = Options()
     op.add_argument("--user-data-dir=" + homedir + "\\AppData\\Local\\Google\\Chrome\\User Data")
     op.add_experimental_option("excludeSwitches", ["enable-automation"])
     op.add_experimental_option("useAutomationExtension", False)
 
-    driver = webdriver.Chrome("chromedriver.exe",
+    service = Service("chromedriver.exe")
+    service.creationflags = CREATE_NO_WINDOW
+    driver = webdriver.Chrome(service=service,
                               options=op)
     driver.maximize_window()
     return homedir, op, driver
