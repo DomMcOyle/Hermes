@@ -1,14 +1,16 @@
-import time
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException, NoSuchWindowException
 from selenium.webdriver.chrome.options import Options
+
+from datetime import datetime
+import time
 import os.path
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.by import By
 import threading
 import traceback
+
 import psutil
-from datetime import datetime
 import chromedriver_autoinstaller
 
 import constants
@@ -38,6 +40,7 @@ def wa_send(driver, string_of_photos):
         inv = driver.find_element_by_xpath("//input[@type='file']")
         inv.send_keys(string_of_photos)
     wait_until(driver, "//span[@data-icon='send']")
+    time.sleep(1)
     driver.find_element_by_xpath("//span[@data-icon='send']").click()
     time.sleep(1)
     wait_until(driver, "//span[@data-icon='msg-time']", disappears=True)
@@ -101,8 +104,8 @@ def send_to_list(list_of_numbers, wrong_num_idx, start_idx,  text_list, list_of_
             Alert().fire("Chrome non raggiungibile.\nSe è stato chiuso premere nuovamente \"Invia\"", "Errore")
             window.rollback(i)
         else:
-            Alert().fire("Errore durante l'invio.\nControllare il file di log per maggiori dettagli", "Errore")
             Log(e)
+            Alert().fire("Errore durante l'invio.\nControllare il file di log per maggiori dettagli", "Errore")
             window.rollback(i)
     except NoSuchWindowException:
             Alert().fire("Chrome non raggiungibile.\nSe è stato chiuso premere nuovamente \"Invia\"", "Errore")
@@ -115,9 +118,10 @@ def send_to_list(list_of_numbers, wrong_num_idx, start_idx,  text_list, list_of_
             Alert().fire("Tempo per l'autenticazione (QR code) scaduto, esegui l'accesso e riprova", "Errore")
             window.rollback()
     except Exception as e_standard:
+        Log(e_standard)
         Alert().fire("Errore durante l'invio.\nControllare il file di log per maggiori dettagli", "Errore")
         window.rollback()
-        Log(e_standard)
+
 
 
 
@@ -150,7 +154,7 @@ def wait_until(driver, x_path_string, disappears=False, exc=constants.except_mes
 
 
 def dump_inexistent_numbers(number_list):
-    f = open("Numeri inesistenti " + str(datetime.now().date()) + ".txt", mode="a")
+    f = open(constants.log_path + "Numeri inesistenti " + str(datetime.now().date()) + ".txt", mode="a")
     f.write("Indice\t\t\t\tNumero di telefono\n")
     for number in number_list:
         f.write(str(number[0]+1) + '\t\t\t\t' + str(number[1]) + '\n')

@@ -1,0 +1,181 @@
+2021-11-06 21:59:22.346058: Line 51 of C:\Users\Neo Dom-Z Mk. II\Desktop\repo hermes\Hermes\hermes.py
+Exception: AMMACCABANANE
+2021-11-06 22:00:00.276704: Line 51 of C:\Users\Neo Dom-Z Mk. II\Desktop\repo hermes\Hermes\hermes.py
+Exception: AMMACCABANANE
+2021-11-06 23:50:24.125001: Line 248 of C:/Users/Neo Dom-Z Mk. II/Desktop/repo hermes/Hermes/gui.py
+PopupException: Popup can have only one widget as content
+2021-11-06 23:51:27.183674: Line 249 of C:/Users/Neo Dom-Z Mk. II/Desktop/repo hermes/Hermes/gui.py
+PopupException: Popup can have only one widget as content
+2021-11-07 00:04:15.718643: Line 253 of C:/Users/Neo Dom-Z Mk. II/Desktop/repo hermes/Hermes/gui.py
+IndexError: list index out of range
+2021-11-07 00:05:16.913896: 2021-11-07 00:07:17.233617: Line 252 of C:/Users/Neo Dom-Z Mk. II/Desktop/repo hermes/Hermes/gui.py
+IndexError: list index out of range
+2021-11-07 00:08:38.661821: Line 49 of C:\Users\Neo Dom-Z Mk. II\Desktop\repo hermes\Hermes\hermes.py
+InvalidArgumentException: Message: invalid argument: user data directory is already in use, please specify a unique value for --user-data-dir argument, or don't use --user-data-dir
+Stacktrace:
+Backtrace:
+	Ordinal0 [0x002F06F3+2492147]
+	Ordinal0 [0x00289BD1+2071505]
+	Ordinal0 [0x00192478+1057912]
+	Ordinal0 [0x001AD28B+1168011]
+	Ordinal0 [0x001A9C9F+1154207]
+	Ordinal0 [0x001D9DFF+1351167]
+	Ordinal0 [0x001D9A6A+1350250]
+	Ordinal0 [0x001D568B+1332875]
+	Ordinal0 [0x001B21D4+1188308]
+	Ordinal0 [0x001B302F+1191983]
+	GetHandleVerifier [0x004767A6+1545030]
+	GetHandleVerifier [0x0052105C+2243580]
+	GetHandleVerifier [0x0037BC97+518199]
+	GetHandleVerifier [0x0037AD80+514336]
+	Ordinal0 [0x0028ED2D+2092333]
+	Ordinal0 [0x00292EE8+2109160]
+	Ordinal0 [0x00293022+2109474]
+	Ordinal0 [0x0029CB71+2149233]
+	BaseThreadInitThunk [0x76E9FA29+25]
+	RtlGetAppContainerNamedObjectPath [0x77E97A9E+286]
+	RtlGetAppContainerNamedObjectPath [0x77E97A6E+238]
+	(No symbol) [0x00000000]
+
+2021-11-08 19:25:11.431377: Line 80 of C:\Users\Neo Dom-Z Mk. II\Desktop\repo hermes\Hermes\hermes.py
+StaleElementReferenceException: Message: stale element reference: element is not attached to the page document
+  (Session info: chrome=95.0.4638.69)
+Stacktrace:
+Backtrace:
+	Ordinal0 [0x009706F3+2492147]
+	Ordinal0 [0x00909BD1+2071505]
+	Ordinal0 [0x00812478+1057912]
+	Ordinal0 [0x00814BA4+1067940]
+	Ordinal0 [0x00814A6E+1067630]
+	Ordinal0 [0x00814CD0+1068240]
+	Ordinal0 [0x008427CB+1255371]
+	Ordinal0 [0x00840D34+1248564]
+	Ordinal0 [0x0083EAFD+1239805]
+	Ordinal0 [0x0083D958+1235288]
+	Ordinal0 [0x00833647+1193543]
+	Ordinal0 [0x008557C3+1333187]
+	Ordinal0 [0x00833466+1193062]
+	Ordinal0 [0x008558AA+1333418]
+	Ordinal0 [0x00864F38+1396536]
+	Ordinal0 [0x0085568B+1332875]
+	Ordinal0 [0x008321D4+1188308]
+	Ordinal0 [0x0083302F+1191983]
+	GetHandleVerifier [0x00AF67A6+1545030]
+	GetHandleVerifier [0x00BA105C+2243580]
+	GetHandleVerifier [0x009FBC97+518199]
+	GetHandleVerifier [0x009FAD80+514336]
+	Ordinal0 [0x0090ED2D+2092333]
+	Ordinal0 [0x00912EE8+2109160]
+	Ordinal0 [0x00913022+2109474]
+	Ordinal0 [0x0091CB71+2149233]
+	BaseThreadInitThunk [0x76E9FA29+25]
+	RtlGetAppContainerNamedObjectPath [0x77E97A9E+286]
+	RtlGetAppContainerNamedObjectPath [0x77E97A6E+238]
+
+2021-11-08 19:27:08.402003: Line 92 of C:\Users\Neo Dom-Z Mk. II\Desktop\repo hermes\Hermes\hermes.py
+AttributeError: 'ProgressWindow' object has no attribute 'finalize'
+2021-11-08 19:36:41.198253: Line 74 of C:\Users\Neo Dom-Z Mk. II\Desktop\repo hermes\Hermes\hermes.py
+IndexError: list index out of range
+2021-11-08 20:12:52.429106: Line 283 of C:/Users/Neo Dom-Z Mk. II/Desktop/repo hermes/Hermes/gui.py
+BuilderException: Parser: File "C:\Users\Neo Dom-Z Mk. II\Desktop\repo hermes\Hermes\starting_window.kv", line 95:
+...
+     93:                size_hint: None, None
+     94:                height: self.texture_size[1]
+>>   95:                width: None
+     96:                #width: self.texture_size[0]
+     97:                #text_size: self.width, None
+...
+ValueError: None is not allowed for Label.width
+  File "C:\Users\Neo Dom-Z Mk. II\Desktop\repo hermes\venv\lib\site-packages\kivy\lang\builder.py", line 701, in _apply_rule
+    setattr(widget_set, key, value)
+  File "kivy\weakproxy.pyx", line 35, in kivy.weakproxy.WeakProxy.__setattr__
+  File "kivy\properties.pyx", line 498, in kivy.properties.Property.__set__
+  File "kivy\properties.pyx", line 542, in kivy.properties.Property.set
+  File "kivy\properties.pyx", line 533, in kivy.properties.Property.set
+  File "kivy\properties.pyx", line 636, in kivy.properties.NumericProperty.check
+  File "kivy\properties.pyx", line 571, in kivy.properties.Property.check
+
+2021-11-08 20:43:51.625508: Line 85 of C:\Users\Neo Dom-Z Mk. II\Desktop\repo hermes\Hermes\hermes.py
+NoSuchWindowException: Message: no such window: window was already closed
+  (Session info: chrome=95.0.4638.69)
+Stacktrace:
+Backtrace:
+	Ordinal0 [0x009706F3+2492147]
+	Ordinal0 [0x00909BD1+2071505]
+	Ordinal0 [0x00812478+1057912]
+	Ordinal0 [0x008083E8+1016808]
+	Ordinal0 [0x00809345+1020741]
+	Ordinal0 [0x00803453+996435]
+	Ordinal0 [0x00813690+1062544]
+	Ordinal0 [0x008646D2+1394386]
+	Ordinal0 [0x0085568B+1332875]
+	Ordinal0 [0x008321D4+1188308]
+	Ordinal0 [0x0083302F+1191983]
+	GetHandleVerifier [0x00AF67A6+1545030]
+	GetHandleVerifier [0x00BA105C+2243580]
+	GetHandleVerifier [0x009FBC97+518199]
+	GetHandleVerifier [0x009FAD80+514336]
+	Ordinal0 [0x0090ED2D+2092333]
+	Ordinal0 [0x00912EE8+2109160]
+	Ordinal0 [0x00913022+2109474]
+	Ordinal0 [0x0091CB71+2149233]
+	BaseThreadInitThunk [0x76E9FA29+25]
+	RtlGetAppContainerNamedObjectPath [0x77E97A9E+286]
+	RtlGetAppContainerNamedObjectPath [0x77E97A6E+238]
+
+2021-11-08 20:52:57.525741: Line 50 of C:\Users\Neo Dom-Z Mk. II\Desktop\repo hermes\Hermes\hermes.py
+WebDriverException: Message: unknown error: failed to change window state to 'normal', current state is 'maximized'
+  (Session info: chrome=95.0.4638.69)
+Stacktrace:
+Backtrace:
+	Ordinal0 [0x009706F3+2492147]
+	Ordinal0 [0x00909BD1+2071505]
+	Ordinal0 [0x00812478+1057912]
+	Ordinal0 [0x007FEA0C+977420]
+	Ordinal0 [0x007FDABA+973498]
+	Ordinal0 [0x007FC8D6+968918]
+	Ordinal0 [0x00874A8F+1460879]
+	Ordinal0 [0x008557C3+1333187]
+	Ordinal0 [0x00864F38+1396536]
+	Ordinal0 [0x0085568B+1332875]
+	Ordinal0 [0x008321D4+1188308]
+	Ordinal0 [0x0083302F+1191983]
+	GetHandleVerifier [0x00AF67A6+1545030]
+	GetHandleVerifier [0x00BA105C+2243580]
+	GetHandleVerifier [0x009FBC97+518199]
+	GetHandleVerifier [0x009FAD80+514336]
+	Ordinal0 [0x0090ED2D+2092333]
+	Ordinal0 [0x00912EE8+2109160]
+	Ordinal0 [0x00913022+2109474]
+	Ordinal0 [0x0091CB71+2149233]
+	BaseThreadInitThunk [0x76E9FA29+25]
+	RtlGetAppContainerNamedObjectPath [0x77E97A9E+286]
+	RtlGetAppContainerNamedObjectPath [0x77E97A6E+238]
+
+2021-11-08 21:47:46.680057: Line 286 of C:/Users/Neo Dom-Z Mk. II/Desktop/repo hermes/Hermes/gui.py
+ParserException: Parser: File "C:\Users\Neo Dom-Z Mk. II\Desktop\repo hermes\Hermes\starting_window.kv", line 2:
+...
+      1:#:import basename os.path.basename
+>>    2:#:import constants
+      3:<Blue_button@Button>:
+      4:    canvas.before:
+...
+Invalid import syntax
+2021-11-08 21:48:18.091020: Line 286 of C:/Users/Neo Dom-Z Mk. II/Desktop/repo hermes/Hermes/gui.py
+BuilderException: Parser: File "C:\Users\Neo Dom-Z Mk. II\Desktop\repo hermes\Hermes\starting_window.kv", line 104:
+...
+    102:            allow_stretch: True
+    103:            pos_hint: {'top':0.35, 'x':0.38}
+>>  104:            source: place_holder_image
+    105:
+    106:        Blue_button:
+...
+ValueError: Image.source accept only str
+  File "C:\Users\Neo Dom-Z Mk. II\Desktop\repo hermes\venv\lib\site-packages\kivy\lang\builder.py", line 701, in _apply_rule
+    setattr(widget_set, key, value)
+  File "kivy\weakproxy.pyx", line 35, in kivy.weakproxy.WeakProxy.__setattr__
+  File "kivy\properties.pyx", line 498, in kivy.properties.Property.__set__
+  File "kivy\properties.pyx", line 542, in kivy.properties.Property.set
+  File "kivy\properties.pyx", line 533, in kivy.properties.Property.set
+  File "kivy\properties.pyx", line 699, in kivy.properties.StringProperty.check
+

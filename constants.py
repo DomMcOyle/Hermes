@@ -1,5 +1,6 @@
 #-------------DEBUG-----------------------
 log_file_name = "log.txt"
+log_path = "log//"
 
 #-------------FILEREADER------------------
 check_number_regex = "^([0-9]|\s|\+)+$"

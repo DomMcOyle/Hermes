@@ -38,7 +38,7 @@ WindowManager:
 
         Label:
             id: filename_label
-            text: basename(app.options.get_exc_path())
+            text: basename(app.last_sett.get_exc_path())
             size_hint: 0.15,0.15
             pos_hint: {'top':1.02, 'x':0.465}
 
@@ -48,7 +48,7 @@ WindowManager:
             size_hint: 0.40,0.10
             pos_hint: {'top':0.90, 'x':0.34}
             font_size: 24
-            disabled: not app.options.get_exc_path()
+            disabled: not app.last_sett.get_exc_path()
             on_release: root.preview_excel()
 
         Blue_button:

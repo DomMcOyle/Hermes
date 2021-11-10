@@ -13,6 +13,7 @@ from alert import Alert
 from debug import Log
 from filereader import check_rows, acquire_numbers_from_excel_file
 from hermes import send_to_list_in_thread, check_if_open, update_driver
+
 import constants
 
 
@@ -25,7 +26,7 @@ class MainWindow(Screen):
 
     def check_and_recap(self):
         app = App.get_running_app()
-        if not os.path.isfile(app.options.get_exc_path()):
+        if not os.path.isfile(app.last_sett.get_exc_path()):
             Alert().fire("Non è stato selezionato un file valido", "Errore")
             return
         if self.ids.message_input.text.strip() == "" and len(app.file_paths) == 0:
@@ -35,9 +36,9 @@ class MainWindow(Screen):
             if not os.path.isfile(image):
                 Alert().fire("L'immagine " + os.path.basename(image) + " non è stata trovata.", "Errore")
                 return
-        start_index = app.options.get_last_index() + 1
+        start_index = app.last_sett.get_last_index() + 1
         try:
-            exc_rows = check_rows(app.options.get_exc_path())
+            exc_rows = check_rows(app.last_sett.get_exc_path())
         except: # lancia un'eccezione se non trova colonne valide
             Alert().fire("Il file selezionato è vuoto o non presenta numeri di telefono validi.", "Errore")
             return
@@ -53,7 +54,7 @@ class MainWindow(Screen):
 
         next_window = self.manager.get_screen('recap')
         next_window.ids.message_label.text = app.message_txt
-        next_window.ids.excel_label.text = app.options.get_exc_path()
+        next_window.ids.excel_label.text = app.last_sett.get_exc_path()
         next_window.ids.index_label.text = str(start_index)
         imagelist = ""
         for i in app.file_paths:
@@ -65,7 +66,6 @@ class MainWindow(Screen):
         self.manager.transition.direction = 'left'
         self.manager.current = 'recap'
 
-
     def choose_file(self):
         Tk().withdraw()
         filepath = filedialog.askopenfilename(title="Scegli un File Excel",
@@ -73,7 +73,7 @@ class MainWindow(Screen):
         # TODO eventualmente controllare liceità file excel
         if filepath:
             app = App.get_running_app()
-            app.options.set_exc_path(filepath)
+            app.last_sett.set_exc_path(filepath)
             fnlabel = self.ids.filename_label
             fnlabel.text = os.path.basename(filepath)
             if self.ids.visualize_button.disabled:
@@ -81,12 +81,12 @@ class MainWindow(Screen):
 
     def preview_excel(self):
         app = App.get_running_app()
-        path = app.options.get_exc_path()
+        path = app.last_sett.get_exc_path()
         if os.path.isfile(path):
             os.startfile(path)
         else:
             Alert().fire('Il file "' + os.path.basename(path) + '" non è stato trovato nella cartella "' +
-                        os.path.dirname(path) + '".', "Errore")
+                         os.path.dirname(path) + '".', "Errore")
 
     def load_images(self):
         Tk().withdraw()
@@ -97,6 +97,7 @@ class MainWindow(Screen):
         self.update_carousel(filepaths)
 
     def update_carousel(self, filepaths):
+        
         app = App.get_running_app()
         for elem in filepaths:
             if elem not in app.file_paths:
@@ -158,7 +159,7 @@ class RecapWindow(Screen):
         app.effective_starting_index = int(self.ids.index_label.text)-1
         next_window = self.manager.get_screen('progress')
         try:
-            rows = check_rows(app.options.get_exc_path())
+            rows = check_rows(app.last_sett.get_exc_path())
         except:  # lancia un'eccezione se non trova colonne valide
             Alert().fire("Il file selezionato è vuoto o non presenta numeri di telefono validi.", "Errore")
             return
@@ -167,7 +168,7 @@ class RecapWindow(Screen):
         next_window.ids.p_bar.value = 0
         next_window.ids.p_label.text = "Invio dei messaggi...  (" + str(next_window.ids.p_bar.max) + " numeri rimanenti)"
 
-        if not os.path.isfile(app.options.get_exc_path()):
+        if not os.path.isfile(app.last_sett.get_exc_path()):
             Alert().fire("Il file contenente i numeri è stato spostato o rimosso.", "Errore")
             return
 
@@ -186,7 +187,7 @@ class ProgressWindow(Screen):
         if index is not None:
             next_window = self.manager.get_screen('recap')
             next_window.ids.index_label.text = str(index + 1)
-            app.options.set_last_index(index)
+            app.last_sett.set_last_index(index)
 
         self.manager.transition.direction = 'right'
         self.manager.current = 'recap'
@@ -221,13 +222,14 @@ class ProgressWindow(Screen):
         self.ids.stop_button.text = "Stop"
         self.ids.stop_button.on_release = self.kill_thread_saving_index
         try:
-            number_list, wrong_numbers = acquire_numbers_from_excel_file(app.options.get_exc_path())
+            number_list, wrong_numbers = acquire_numbers_from_excel_file(app.last_sett.get_exc_path())
         except:
             Alert().fire("Il file indicato non contiene numeri di telefono utilizzabili", "Errore")
             self.manager.transition.direction = 'right'
             self.manager.current = 'main'
             return
         send_to_list_in_thread(number_list, wrong_numbers, app.effective_starting_index, app.message_txt, app.file_paths, self)
+
 
 
     def update_progress_bar(self):
@@ -243,7 +245,7 @@ class ProgressWindow(Screen):
         self.ids.pause_button.disabled = True
         self.ids.stop_button.text = "Indietro"
         self.ids.stop_button.on_release = self.rollback
-        App.get_running_app().options.set_last_index(0)
+        App.get_running_app().last_sett.set_last_index(0)
 
 
 class WindowManager(ScreenManager):
@@ -251,9 +253,9 @@ class WindowManager(ScreenManager):
 
 class BaseApp(App):
     def build(self):
+        self.last_sett = Options()
         Window.clearcolor = (43 / 256, 60 / 256, 103 / 256, 1)
         update_driver()
-        self.options = Options()
         self.img_paths = []
         self.current_image = 0
         self.file_paths = []
@@ -263,16 +265,17 @@ class BaseApp(App):
         self.kill_thread = False
         self.title = 'Hermes'
         self.icon = "hermes_logo_2.jpg"
-        if not os.path.isfile(self.options.get_exc_path()):
+        if not os.path.isfile(self.last_sett.get_exc_path()):
             # if the file does not exist anymore, the path is disabled.
-            self.options.set_exc_path("")
+            self.last_sett.set_exc_path("")
         return Builder.load_file("starting_window.kv")
 
     def stop(self, *args):
-        self.options.dump_options()
+        self.last_sett.dump_options()
         for elem in self.img_paths:
             if "_preview" in elem:
                 os.remove(elem)
+
 
 
 if __name__ == '__main__':
@@ -280,10 +283,11 @@ if __name__ == '__main__':
         app = BaseApp()
         app.run()
     except Exception as e:
-        app.options.dump_options()
+        Log(e)
+        print(e)
+        app.last_sett.dump_options()
         for elem in app.img_paths:
             if "_preview" in elem:
                 os.remove(elem)
-        Log(e)
 
 

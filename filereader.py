@@ -21,7 +21,9 @@ def acquire_numbers_from_excel_file(file_name = "numeri.xls"):
         try:
             current_number = fix_number(sheet[j, col_numbers])
             correct_numbers.append(current_number)
-        except:
+        except Exception as e :
+            print(e)
+            print(type(sheet[j, col_numbers]))
             wrong_number_indexes.append(j)
     return correct_numbers, wrong_number_indexes
 
@@ -31,25 +33,26 @@ def check_if_number(to_check):
 
 
 def fix_number(to_fix):
-    if not check_if_number(to_fix):
+    str_fix = str(to_fix)
+    if not check_if_number(str_fix):
         raise Exception(constants.wrong_number_exception_str)
-    to_fix = to_fix.replace(" ", "")
-    where_plus = to_fix.rfind("+")
-    if where_plus > 0 and re.match(constants.check_if_digit, to_fix[where_plus - 1]):
+    str_fix = str_fix.replace(" ", "")
+    where_plus = str_fix.rfind("+")
+    if where_plus > 0 and re.match(constants.check_if_digit, str_fix[where_plus - 1]):
         raise Exception(constants.wrong_number_exception_str)
     num_digits = 0
-    for i in range(0, len(to_fix)):
-        if re.match(constants.check_if_digit, to_fix[i]):
+    for i in range(0, len(str_fix)):
+        if re.match(constants.check_if_digit, str_fix[i]):
             num_digits += 1
     if where_plus < 0:
         if num_digits == constants.num_digits_in_number:
-            to_fix = "+39" + to_fix
+            str_fix = "+39" + str_fix
         else:
             raise Exception(constants.wrong_number_exception_str)
     else:
         if num_digits - 2 != constants.num_digits_in_number:  # we exclude the number of digits in the prefix
             raise Exception(constants.wrong_number_exception_str)
-    return to_fix
+    return str_fix
 
 
 def check_rows(file_name):

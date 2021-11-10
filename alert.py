@@ -1,5 +1,5 @@
 from kivy.uix.popup import Popup
-from kivy.uix.button import Button
+
 
 class Alert(Popup):
     def fire(self, message, title):
