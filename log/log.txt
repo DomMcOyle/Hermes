@@ -179,3 +179,35 @@ ValueError: Image.source accept only str
   File "kivy\properties.pyx", line 533, in kivy.properties.Property.set
   File "kivy\properties.pyx", line 699, in kivy.properties.StringProperty.check
 
+2022-03-25 18:14:13.786918: Line 93 of C:\Users\Neo Dom-Z Mk. II\Desktop\repo e workspaces\repo hermes2\Hermes\hermes.py
+InvalidArgumentException: Message: invalid argument: 'value' must be a string
+  (Session info: chrome=99.0.4844.82)
+Stacktrace:
+Backtrace:
+	Ordinal0 [0x00FDCF43+2608963]
+	Ordinal0 [0x00F6E8C1+2156737]
+	Ordinal0 [0x00E642C8+1065672]
+	Ordinal0 [0x00E90BFD+1248253]
+	Ordinal0 [0x00E90C4B+1248331]
+	Ordinal0 [0x00EBD192+1429906]
+	Ordinal0 [0x00EAB104+1356036]
+	Ordinal0 [0x00EBB58A+1422730]
+	Ordinal0 [0x00EAAED6+1355478]
+	Ordinal0 [0x00E85D86+1203590]
+	Ordinal0 [0x00E86C66+1207398]
+	GetHandleVerifier [0x01183252+1679186]
+	GetHandleVerifier [0x0123591C+2410012]
+	GetHandleVerifier [0x01073B41+567361]
+	GetHandleVerifier [0x01072CC6+563654]
+	Ordinal0 [0x00F74B5B+2181979]
+	Ordinal0 [0x00F79AA8+2202280]
+	Ordinal0 [0x00F79B95+2202517]
+	Ordinal0 [0x00F83B2C+2243372]
+	BaseThreadInitThunk [0x75ECFA29+25]
+	RtlGetAppContainerNamedObjectPath [0x777B7A9E+286]
+	RtlGetAppContainerNamedObjectPath [0x777B7A6E+238]
+
+2022-03-25 18:38:18.736583: Line 104 of C:\Users\Neo Dom-Z Mk. II\Desktop\repo e workspaces\repo hermes2\Hermes\hermes.py
+UnboundLocalError: local variable 'n_retries' referenced before assignment
+2022-03-25 18:39:06.339615: Line 104 of C:\Users\Neo Dom-Z Mk. II\Desktop\repo e workspaces\repo hermes2\Hermes\hermes.py
+UnboundLocalError: local variable 'n_retries' referenced before assignment
