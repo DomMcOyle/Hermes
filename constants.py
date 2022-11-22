@@ -14,3 +14,4 @@ except_message_timeout_reached = "timeout reached"
 except_message_qr = "qr phase not completed"
 
 TIMEOUT = 30 #timeout in seconds
+NUM_RETRIES = 3
