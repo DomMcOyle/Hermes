@@ -3,6 +3,7 @@ from kivy.lang import Builder
 from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.config import Config
 from kivy.core.window import Window
+from kivy.clock import Clock, mainthread
 from tkinter import filedialog, Tk
 
 import os
@@ -181,6 +182,7 @@ class RecapWindow(Screen):
 
 
 class ProgressWindow(Screen):
+    @mainthread
     def rollback(self, index=None):
         app = App.get_running_app()
 
@@ -194,6 +196,7 @@ class ProgressWindow(Screen):
         app.pause_thread = False
         app.kill_thread = False
 
+    @mainthread
     def pause_send_thread(self):
 
         app = App.get_running_app()
@@ -203,6 +206,10 @@ class ProgressWindow(Screen):
         elif app.pause_thread:
             app.pause_thread = False
             self.ids.pause_button.text = "Pausa"
+    @mainthread
+    def fire_alert(self, msg, title):
+    # funzione helper per creare alert. Dalla versione 2.1.0 kivy non permette più di creare finestre da thread esterni
+        Alert().fire(msg, title)
 
     def kill_thread_saving_index(self):
         app = App.get_running_app()
@@ -229,6 +236,7 @@ class ProgressWindow(Screen):
             self.manager.current = 'main'
             return
         send_to_list_in_thread(number_list, wrong_numbers, app.effective_starting_index, app.message_txt, app.file_paths, self)
+
 
 
 

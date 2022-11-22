@@ -16,7 +16,7 @@ import psutil
 import chromedriver_autoinstaller
 
 import constants
-from alert import Alert, TimeoutException
+from alert import TimeoutException
 from debug import Log
 
 
@@ -28,11 +28,13 @@ def initialize_web_driver():
     op.add_argument("--user-data-dir=" + homedir + "\\AppData\\Local\\Google\\Chrome\\User Data")
     op.add_experimental_option("excludeSwitches", ["enable-automation"])
     op.add_experimental_option("useAutomationExtension", False)
+    op.add_argument("--silent")
 
     service = Service("chromedriver.exe")
     service.creationflags = CREATE_NO_WINDOW
     driver = webdriver.Chrome(service=service,
                               options=op)
+
     driver.maximize_window()
     return homedir, op, driver
 
@@ -41,12 +43,12 @@ def wa_send(driver, string_of_photos):
 
     if string_of_photos:
         wait_until(driver, ["//span[@data-icon='clip']"])
-        driver.find_element_by_xpath("//span[@data-icon='clip']").click()
-        inv = driver.find_element_by_xpath("//input[@type='file']")
+        driver.find_element(By.XPATH, "//span[@data-icon='clip']").click()
+        inv = driver.find_element(By.XPATH, "//input[@type='file']")
         inv.send_keys(string_of_photos)
     wait_until(driver, ["//span[@data-icon='send']"])
     time.sleep(1)
-    driver.find_element_by_xpath("//span[@data-icon='send']").click()
+    driver.find_element(By.XPATH, "//span[@data-icon='send']").click()
     time.sleep(1)
     wait_until(driver, ["//span[@data-icon='msg-time']"], disappears=True)
 
@@ -91,6 +93,7 @@ def send_to_list(list_of_numbers, wrong_num_idx, start_idx,  text_list, list_of_
                     time.sleep(1)
                     appeared_index = wait_until(driver, ["//*[contains(text(), 'via url non valido')]",
                                                          "//span[@data-icon='clip']"])
+                    # indice di queli dei due nella lista precedente è apparso
                     if appeared_index == 0:
                         inexistent_numbers.append([i, list_of_numbers[i-num_wrong]])
 
@@ -128,25 +131,25 @@ def send_to_list(list_of_numbers, wrong_num_idx, start_idx,  text_list, list_of_
         window.finalize_send(not_found_warning)
     except WebDriverException as e:
         if e.msg == "chrome not reachable":
-            Alert().fire("Chrome non raggiungibile.\nSe è stato chiuso premere nuovamente \"Invia\"", "Errore")
+            window.fire_alert("Chrome non raggiungibile.\nSe è stato chiuso premere nuovamente \"Invia\"", "Errore")
             window.rollback(i)
         else:
             Log(e)
-            Alert().fire("Errore durante l'invio.\nControllare il file di log per maggiori dettagli", "Errore")
+            window.fire_alert("Errore durante l'invio.\nControllare il file di log per maggiori dettagli", "Errore")
             window.rollback(i)
     except NoSuchWindowException:
-            Alert().fire("Chrome non raggiungibile.\nSe è stato chiuso premere nuovamente \"Invia\"", "Errore")
+            window.fire_alert("Chrome non raggiungibile.\nSe è stato chiuso premere nuovamente \"Invia\"", "Errore")
             window.rollback(i)
     except TimeoutException as te:
         if te.msg == constants.except_message_timeout_reached:
-            Alert().fire("Errore durante l'invio, controlla la connessione di rete e riprova", "Errore")
+            window.fire_alert("Errore durante l'invio, controlla la connessione di rete e riprova", "Errore")
             window.rollback(i)
         elif te.msg == constants.except_message_qr:
-            Alert().fire("Tempo per l'autenticazione (QR code) scaduto, esegui l'accesso e riprova", "Errore")
+            window.fire_alert("Tempo per l'autenticazione (QR code) scaduto, esegui l'accesso e riprova", "Errore")
             window.rollback()
     except Exception as e_standard:
         Log(e_standard)
-        Alert().fire("Errore durante l'invio.\nControllare il file di log per maggiori dettagli", "Errore")
+        window.fire_alert("Errore durante l'invio.\nControllare il file di log per maggiori dettagli", "Errore")
         window.rollback()
 
 
