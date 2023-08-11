@@ -22,19 +22,21 @@ from debug import Log
 
 
 def initialize_web_driver():
+    print(1)
     homedir = os.path.expanduser("~")
 
     op = Options()
     op.add_argument("--user-data-dir=" + homedir + "\\AppData\\Local\\Google\\Chrome\\User Data")
     op.add_experimental_option("excludeSwitches", ["enable-automation"])
     op.add_experimental_option("useAutomationExtension", False)
-    op.add_argument("--silent")
-
+    #op.add_argument("--silent")
+    print(2)
     service = Service("chromedriver.exe")
     service.creationflags = CREATE_NO_WINDOW
+    print(3)
     driver = webdriver.Chrome(service=service,
                               options=op)
-
+    print(4)
     driver.maximize_window()
     return homedir, op, driver
 
@@ -42,8 +44,8 @@ def initialize_web_driver():
 def wa_send(driver, string_of_photos):
 
     if string_of_photos:
-        wait_until(driver, ["//span[@data-icon='clip']"])
-        driver.find_element(By.XPATH, "//span[@data-icon='clip']").click()
+        wait_until(driver, ["//span[@data-icon='attach-menu-plus']"])
+        driver.find_element(By.XPATH, "//span[@data-icon='attach-menu-plus']").click()
         inv = driver.find_element(By.XPATH, "//input[@type='file']")
         inv.send_keys(string_of_photos)
     wait_until(driver, ["//span[@data-icon='send']"])
@@ -58,10 +60,14 @@ def send_to_list(list_of_numbers, wrong_num_idx, start_idx,  text_list, list_of_
     num_wrong = 0
     n_retries = 0
     timeout = False
+    print('mandando')
     try:
+        print('inizializzazione web driver')
         homedir, op, driver = initialize_web_driver()
         # controllo d'accesso (non mi viene un'idea migliore)
+        print('aprendo whatsapp')
         driver.get("https://web.whatsapp.com")  # apri whatsapp
+        print('capiamo')
         wait_until(driver, ["//div[@aria-label='Scan me!']"], disappears=True, exc=constants.except_message_qr)
         wait_until(driver, ["//div[@id='side']"])
         inexistent_numbers = []
@@ -92,7 +98,7 @@ def send_to_list(list_of_numbers, wrong_num_idx, start_idx,  text_list, list_of_
                     driver.get("https://web.whatsapp.com/send?phone=" + list_of_numbers[i-num_wrong] + "&text=" + text_list) #lancia
                     time.sleep(1)
                     appeared_index = wait_until(driver, ["//*[contains(text(), 'via url non valido')]",
-                                                         "//span[@data-icon='clip']"])
+                                                         "//span[@data-icon='search-alt']"])
                     # indice di queli dei due nella lista precedente è apparso
                     if appeared_index == 0:
                         inexistent_numbers.append([i, list_of_numbers[i-num_wrong]])
